@@ -1,0 +1,59 @@
+{
+  "functions": {
+    "canvas": "\n\n\n\n",
+    "paperjs": "paper.project.layers[0].removeChildren();\nvar center = [ scale(view.size.width / 2), scale(view.size.height / 2) ];\n\nMath.seedrandom('Stuart Robinson');\n//Math.seedrandom('Stuart Robinson');\nvar slices = 4 + Math.floor( Math.random() * 12 ),\n    color_bands = [];\n\nfor (var i = 0; i < slices; i++) { color_bands[i] = Math.random() * 360; }\n\nfor (var i = n_rings, l = 0; i > l; i--) {\n  var black = i % 2,\n      c = new Path.Circle( center, scale(1 * black + Math.sqrt(i) * yeah/1) );\n\n  var hue = color_bands[ Math.floor( i/(n_rings/slices) ) ] ;\n  c.fillColor = '#f0f';\n  //c.fillColor.hue = color_offset - (i * color_range);\n  c.fillColor.hue = hue;\n  c.fillColor.brightness = (i / 12);\n  c.scale( x_scale, y_scale );\n//  c.position.x += scale( Math.random() * 3); c.position.y += scale( Math.random() * 3);\n  if (black) {\n    c.fillColor = 'black';\n  }\n}",
+    "initial": "\n\n\n\n\n"
+  },
+  "parameters": {
+    "color_range": {
+      "initial": "3",
+      "raw": 0,
+      "formula": "coax(this._2_fader1, 0, 3)",
+      "value": "3",
+      "weight": null,
+      "history": [],
+      "history_length": 50,
+      "id": "color_range"
+    },
+    "color_offset": {
+      "initial": "131",
+      "raw": 0,
+      "formula": "coax(this._2_fader2, 0, 360)",
+      "value": "131",
+      "weight": null,
+      "history": [],
+      "history_length": 50,
+      "id": "color_offset"
+    },
+    "x_scale": {
+      "initial": 1,
+      "raw": 0.5,
+      "formula": "coax(this._2_fader4, 0.2, 2)",
+      "value": 1,
+      "weight": null,
+      "id": "x_scale",
+      "history_length": 50,
+      "history": []
+    },
+    "y_scale": {
+      "initial": 1,
+      "raw": 0.5,
+      "formula": "coax(this._2_fader3, 0.2, 2)",
+      "value": 1,
+      "weight": null,
+      "id": "y_scale",
+      "history_length": 50,
+      "history": []
+    },
+    "n_rings": {
+      "initial": 0.5,
+      "raw": 0.5,
+      "formula": "int( coax( 1.01, 18, 44 ) )",
+      "value": 0.5,
+      "weight": null,
+      "id": "n_rings",
+      "history_length": 50,
+      "history": []
+    }
+  }
+}

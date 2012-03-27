@@ -1,0 +1,172 @@
+<html>
+
+<head>
+  <title>foo</title>
+
+  <style>
+    body {
+      background: #eee;
+      width: 600px;
+    }
+  </style>
+  
+  <script type='text/javascript'>
+    var io;
+  </script>
+  
+  <script type="text/javascript" src="js/lib/canvas/paper.js"></script> 
+  <script type="text/javascript" src="js/lib/DAT.GUI.js"></script> 
+  <script type="text/javascript" src="http://localhost:8339/socket.io/socket.io.js"></script>
+
+</head>
+
+
+
+<body>
+  <canvas id="canvas" keepalive="true" width='600' height='600' style='outline: 1px solid black;'></canvas>
+  
+  <a id="foo">Get png</a>
+  <div id="meh"></div>
+  
+  <script type='text/javascript'>
+  
+    function append_png() {
+      var canvas = document.getElementById("canvas");
+      var context = canvas.getContext("2d");
+      var img     = canvas.toDataURL("image/png");
+
+      meh.innerHTML = '<img src="'+img+'"/>';
+    }
+  
+  
+    foo.onclick = append_png;
+  </script>
+
+  <script type="text/paperscript" canvas="canvas">
+
+      if (io) {
+        var socket = io.connect('http://localhost:8339');
+        socket.on('face', function (data) {
+          console.log(data);
+          if (data[4]) {
+            // console.log(data[4]);
+            options.scale = data[4][1] / 4;
+            options.AB_X = 266 - data[8][1] * 9;
+            options.AB_X = 120 - data[9][1] * 9;
+            options.symbolPositionX = 160 - 4 * data[7][1];
+            changed = true;
+          }
+          // socket.emit('my other event', { my: 'data' });
+        });
+      }
+  
+
+      // [ default, min, max ]
+  
+      var options = {
+        speed: 0,
+        symbolPositionX: 156, symbolPositionY: 96,
+        A_X: 157, A_Y: 170,
+        AB_X: 60, AB_Y: 133,
+        B_X: 36, B_Y: 183,
+        C_X: 108, C_Y: 100,
+        centerX: 300,
+        centerY: 300,
+        rotate: 35.1, scale: 1, 
+        color: '#000'
+      };
+      
+      var propellers = 6;
+      var symbols = [];
+      var symbol = {};
+      var gui = new DAT.GUI();      
+
+      gui.add( options, 'rotate').min(0).max(90).onChange(change);
+      gui.add( options, 'scale').min(0).max(3).onChange(change);
+      
+      gui.add(options, 'symbolPositionX').min(0).max(200).onChange(change);
+      gui.add(options, 'symbolPositionY').min(0).max(200).onChange(change);  
+
+      gui.add( options, 'A_X' ).min(0).max(400).onChange(change);
+      gui.add( options, 'A_Y' ).min(0).max(400).onChange(change);
+            
+      gui.add( options, 'AB_X' ).min(0).max(400).onChange(change);
+      gui.add( options, 'AB_Y' ).min(0).max(380).onChange(change);
+           
+      gui.add( options, 'B_X' ).min( 0).max(400).onChange(change);
+      gui.add( options, 'B_Y' ).min( 0).max(400).onChange(change);
+
+      gui.add( options, 'C_X' ).min( 0).max(400).onChange(change);
+      gui.add( options, 'C_Y' ).min( 0).max(400).onChange(change);
+
+      gui.add( options, 'color' ).onChange(change);
+
+      // gui.add(options, 'centerX').min(0).max(300).onChange(change);
+      // gui.add(options, 'centerY').min(0).max(300).onChange(change);
+
+      var centerPoint = new Point(options.centerX, options.centerY);
+
+     //  var centerCircle = new Path.Circle(centerPoint, 80);
+     // centerCircle.fillColor = '#000';
+
+      // var size = new Size(75, 10);
+      var point = new Point(centerPoint);
+      
+
+      var path = new Path();
+      path.strokeWidth = '1';
+      path.selected = true;
+
+      path.add(options.A_X, options.A_Y);
+
+
+      // var B = new Point(options.B_X, options.B_Y);
+      // var thru =  new Point(options.AB_X, options.AB_Y);      
+      // path.curveTo(B, thru);
+      path.lineTo(options.B_X, options.B_Y);
+
+
+      path.lineTo(options.C_X, options.C_Y);
+
+
+      for (var x = 0; x < propellers; x++) {
+        symbol = path.clone();
+        symbols.push(symbol);
+      }
+      
+      var changed = true;
+      function change () {
+        changed = true;
+      }
+
+      function onFrame(event) {
+        if (! changed) return;
+        
+        path.removeSegments();
+
+        // path.strokeColor = '#f00';
+        path.add(options.A_X, options.A_Y);
+        path.lineTo(options.B_X, options.B_Y);
+        
+        var C = new Point(options.C_X, options.C_Y);
+        var thru =  new Point(options.AB_X, options.AB_Y);
+        path.curveTo(thru, C);
+
+        changed = false;
+        
+        for (var x = 0; x < propellers; x++) {
+          symbols[x].remove();
+          symbols[x] = path.clone();
+          symbols[x].selected = false;
+          symbols[x].fillColor = options.color;
+          symbols[x].position += new Point(options.symbolPositionX, options.symbolPositionY);
+          symbols[x].rotate( (360 / propellers) * x, centerPoint);
+        }
+        
+        project.activeLayer.rotate( options.rotate, centerPoint );
+        project.activeLayer.scale( options.scale, centerPoint );        
+      }
+  </script>
+</body>
+
+</html>

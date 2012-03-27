@@ -1,0 +1,123 @@
+{
+  "functions": {
+    "canvas": "\n",
+    "paperjs": "paper.project.layers[0].removeChildren();\n\nfor (var i = 0 + start_n, l = size + start_n;  i < l;  i++) {\n  var b     = new Path.Circle( [ 300, 300 ], 4 ),\n      x_off = Math.sin( i * 1 ) * x_wriggle,\n      y_off = Math.cos( i * 1 ) * y_wriggle;\n\n  b.position.x = scale( 38 +  (i % 12)  * 48 + x_off );\n  b.position.y = scale( 48 + mod(i, 12) *  4 + y_off );\n  b.fillColor = '#0000ff';\n  \n  if (color_spread) {\n    b.fillColor.hue = i * color_spread;\n  } else {\n    b.fillColor.saturation = 0;\n    b.fillColor.brightness = 0.9;\n  }\n  b.scale( x_stretch, y_stretch );\n  b.rotate( rotate_initial + i * rotate_rate );\n}\n\n\n",
+    "initial": "\n\n\n"
+  },
+  "parameters": {
+    "size": {
+      "initial": "40",
+      "raw": 0,
+      "formula": "int( coax( this._2_fader1, 1, 180 ) )",
+      "id": "size",
+      "history_length": 50,
+      "history": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "value": null
+    },
+    "x_stretch": {
+      "initial": "0.8",
+      "raw": 0,
+      "formula": "coax( this._2_fader6, .1, 50 )",
+      "id": "x_stretch",
+      "history_length": 50,
+      "history": [],
+      "value": "0.8"
+    },
+    "y_stretch": {
+      "initial": "1",
+      "raw": 0,
+      "formula": "coax( this._2_fader7, .1, 50 )",
+      "id": "y_stretch",
+      "history_length": 50,
+      "history": [
+        null
+      ],
+      "value": null
+    },
+    "x_wriggle": {
+      "initial": "4",
+      "raw": 0,
+      "formula": "coax( this._2_fader2, 0.01, 30 )",
+      "id": "x_wriggle",
+      "history_length": 50,
+      "history": [
+        0.01,
+        0.01,
+        0.01
+      ],
+      "value": 0.01
+    },
+    "y_wriggle": {
+      "initial": "4",
+      "raw": 0,
+      "formula": "coax( this._2_fader3, 0.01, 30 )",
+      "id": "y_wriggle",
+      "history_length": 50,
+      "history": [
+        null
+      ],
+      "value": null
+    },
+    "rotate_rate": {
+      "initial": "16",
+      "raw": 0,
+      "formula": "coax( this._2_fader4, 0.0001, 30 )",
+      "id": "rotate_rate",
+      "history_length": 50,
+      "history": [],
+      "value": "16"
+    },
+    "rotate_initial": {
+      "initial": 0,
+      "raw": 0,
+      "formula": "coax( this._2_fader5, 0, 360 )",
+      "id": "rotate_initial",
+      "history_length": 50,
+      "history": [],
+      "value": 0
+    },
+    "color_spread": {
+      "initial": "0",
+      "raw": 0,
+      "formula": "coax(this._2_fader8, 0, 1)",
+      "id": "color_spread",
+      "history_length": 50,
+      "history": [
+        null,
+        null
+      ],
+      "value": null
+    },
+    "start_n": {
+      "initial": 0,
+      "raw": 0,
+      "formula": "int( coax(this._3_fader1, 0, 179) )",
+      "id": "start_n",
+      "history_length": 50,
+      "history": [
+        null,
+        null
+      ],
+      "value": null
+    }
+  }
+}

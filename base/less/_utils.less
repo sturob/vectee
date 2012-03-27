@@ -1,0 +1,95 @@
+/* clearfix */
+
+@phi: 1.618033988749;
+
+.clearfix:after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+}
+
+.clearfix { display: inline-block; }
+
+/* start commented backslash hack */
+* html .clearfix { height: 1%; }
+.clearfix { display: block; }
+/* close commented backslash hack */
+
+
+.grad_linear (@start:"", @end:"") {
+  background: -webkit-gradient(linear, left top, left bottom, from(@start), to(@end));
+  background: -moz-linear-gradient(-90deg, @start, @end);
+}
+
+
+.grad_radial(@start:"", @end: "", @spread: 6, @center: 50%) {
+  background: -webkit-gradient(radial, @center @center, 0, @center @center, @spread, from(@start), to(@end));
+  background: -moz-radial-gradient(@center @center, farthest-side, @start, @end); /* For Mozilla/Gecko (Firefox etc) */
+}
+
+.box_shadow (@x: 0, @y: 0, @blur: 0, @color: #000) {
+  -webkit-box-shadow: @x @y @blur @color;
+  -moz-box-shadow: @x @y @blur @color;
+}
+
+.box_shadow_inset (@x: 0, @y: 0, @blur: 0, @color: #000) {
+  -webkit-box-shadow: @x @y @blur @color inset;
+  -moz-box-shadow: @x @y @blur @color inset;
+}
+
+.rotation(@deg: 5deg){ 
+  -o-transform: rotate(@deg);
+  -webkit-transform: rotate(@deg);
+  -moz-transform: rotate(@deg);
+  -ms-transform: rotate(@deg);
+  transform: rotate(@deg);
+}
+
+
+.rounded (@radius: 5px) {
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;  /* http://brenelz.com/blog/webkit-border-radius-background-bleed/ */
+  -moz-border-radius: @radius;
+  -webkit-border-radius: @radius;
+  border-radius: @radius;
+}
+
+.rounded_corners(@tl: 5px, @tr: 5px, @br: 5px, @bl: 5px) {
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;  /* http://brenelz.com/blog/webkit-border-radius-background-bleed/ */
+  -moz-border-radius: @tl @tr @br @bl;
+  -webkit-border-radius: @tl @tr @br @bl;
+  border-radius: @tl @tr @br @bl;
+}
+
+.user_select(@a: 'none') {
+  -webkit-user-select: @a;
+  -khtml-user-select: @a;
+  -moz-user-select: @a;
+  -o-user-select: @a;
+  user-select: @a;
+}
+
+/*.conceal {
+  border-color: transparent transparent #aaa transparent; top: 9px;
+}
+
+.reveal {
+  position: absolute;
+  content: '';
+  display: block;
+  top: 12px;
+  right: 6px;
+  border-color: #aaa transparent transparent transparent;
+  border-style: solid;
+  border-width: 3px;
+  width: 0;
+  height: 0;        
+}*/
+
+.wtf {
+  outline: 2px solid red;
+}

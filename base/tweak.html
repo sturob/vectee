@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Accelerometer Javascript Test</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no"/>
+    <style>
+      body {
+      	font-family: helvetica, arial, sans serif;
+      	margin: 0;
+      	background-color: #ddd;
+      }
+      > div {
+        margin: 4px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      #sphere {
+      	position: absolute;	
+      	width: 5px;
+      	height: 5px;
+      	border-radius: 5px;
+      	-webkit-radius: 5px;
+      	background-color: blue;
+      }
+      
+      /* snorkle.css */
+      ul#vars { 
+        background-color: white;
+        max-width: 500px;
+        margin: 4px 12px;
+        list-style: none;
+        font-size: 18px;
+        font-weight: bold;
+        color: #aaa;
+      }
+      ul#vars h1 {
+        font-size: 12px;
+        background-color: #333;
+        padding: 2px 0 2px 8px;
+        color: white;
+      }
+      ul#vars .viz {
+        display: inline-block;
+        width: 120px;
+        margin-left: 100px;
+      }
+      ul#vars .raw {
+        color: #ddd;
+      }
+      ul#vars input {
+        font-family: Courier;
+        position: absolute;
+        left: 4px;
+        right: 4px;
+        font-size: 12px;
+        bottom: 4px;
+      }
+      ul#vars h2 {
+        position: absolute;
+        left: 12px;
+        top: 2px;
+        font-size: 16px;
+      }
+      ul#vars li {
+        border-bottom: 1px solid #eee;
+        position: relative;
+        margin: 0 0 0px 0;
+      }
+      ul#vars li.result {
+        padding-bottom: 24px;
+      }
+      ul#vars span {
+        font-family: "Courier New";
+      }
+      
+      
+      
+      /* output */
+      
+       div.CodeMirror {
+        border-left: 1px solid red;
+      }
+      
+      #output.ok div.CodeMirror {
+        border-left: 1px solid green !important;
+      }
+      
+      div#mine {
+        position: fixed;
+        top: 0;
+        left: 550px;
+        right: 0;
+        height: 100%;
+        background-color: white;
+        padding: 4px;
+        font-size: 24px;
+      }
+      
+    </style>
+    
+    
+    <script type="text/javascript" src="js/lib/jquery-1.7.min.js"></script>
+    
+    <script type="text/javascript" src="js/lib/jquery/jquery.globalstylesheet.js"></script>
+    
+    <script type="text/javascript" src="js/lib/underscore.js"></script>
+    <script type="text/javascript" src="js/lib/backbone.js"></script>
+    <script type="text/javascript" src="js/lib/json2.js"></script>
+    <script type="text/javascript" src="js/lib/coffee-script.js"></script>
+    <script type="text/javascript" src="js/lib/dataviz/jquery.sparkline.js"></script>
+
+    <script type="text/javascript" src="js/snorkle.js"></script>
+    
+    <script type="text/javascript" src="js/utils.js"></script>
+    
+    <script type="text/javascript" src="http://localhost:8339/socket.io/socket.io.js"></script>
+
+    <script type="text/javascript" src="js/lib/codemirror/codemirror.js"></script>
+    <script type="text/javascript" src="js/lib/codemirror/javascript.js"></script>
+
+    <link rel="stylesheet" href="css/codemirror/codemirror.css">
+    <link rel="stylesheet" href="css/codemirror/theme/default.css">
+
+  </head>
+
+<body>
+  <div id="mine">test</div>
+  <div id="content">
+    <button id="toggle_random">random</button>
+    
+    <button id="toggle_pause">pause</button>
+
+    <div id="output">
+      <h1>output</h1>
+      <textarea></textarea>
+    </div>
+    
+    <!-- <div id="sphere"></div> -->
+  
+  </div>
+</body>
+
+
+
+
+
+
+<script type="text/javascript">
+
+var J = new Snorkle; // { id: '#watcher' }
+                         
+J.addInputArray( 'mouse', { initial: 0.1 } );
+
+var acc_options = { min: -10, max: 10,  initial: 0 };
+
+J.addInput( 'accX', acc_options );
+J.addInput( 'accY', acc_options );
+J.addInput( 'accZ', acc_options );
+
+J.addInput( 'random', { range: { min: 0, max: 1 }, initial: 0.5 } ),
+
+J.addOutput( 'a' );
+J.addOutput( 'b' );
+J.addOutput( 'c' );
+
+
+var outputter = function() {};
+
+function tick () {
+  _.delay(function() {
+    if (! settings.pause) {
+      J.updateReals();
+      J.recalculate();
+      outputter.call( J.reals );
+    }
+    tick();
+  }, 100);
+}
+
+tick();
+
+var myCodeMirror;
+$(function() {
+  var output = localStorage.getItem('outputter');
+  if (output) {
+    $('textarea').text( output );
+    load_code( output );
+  }
+  
+  myCodeMirror = CodeMirror.fromTextArea($('textarea')[0], {
+    onChange: function() {
+      load_code( myCodeMirror.getValue() );
+    }
+  });
+  
+  function load_code( code ) {
+    var f, ok = true;
+    localStorage.setItem( 'outputter', code );
+    
+    try {
+      f = new Function( code );
+      f.call( J.reals );
+    } catch(err) {
+      ok = false;
+      // console.log( "error: " + err );
+      $('#output').removeClass('ok');
+    }
+    if (ok) {
+      $('#output').addClass('ok');
+      outputter = f; 
+    }
+  }
+});
+
+
+
+
+  
+
+
+var settings = {
+  random: false,
+  pause: false,
+  toggle: function(s) {
+    settings[s] = (! settings[s]);
+  }
+};
+
+
+function set_random() {
+  _.delay(function() {
+    var now = J.get('random').value();
+    settings.random && J.get('random').value( now + (Math.random() > 0.5 ? 0.05 : -0.05) );
+    set_random();
+  }, 250);
+}
+set_random();
+
+
+
+
+
+
+
+// osc from node.js
+
+if (typeof io != "undefined") {
+  var socket = io.connect('http://localhost:8339');
+  socket.on('face', function (data) {
+    var id = data.shift(),
+        t  = data.shift(),
+        face = {};
+    
+    _(data).each(function(v) {
+      face[ v[0].replace(/\//g, '_') ] = v.splice(1);
+    });
+      
+    J.pumpInput( face );
+    
+    // socket.emit('my other event', { my: 'data' });
+  });
+}
+
+
+
+
+var acc = {
+  x:  0, y:  0,
+  vx: 0, vy: 0,
+  ax: 0, ay: 0,
+  e: 0
+};
+
+	
+function p (id, num, len) {
+  var pad = (num >= 0) ? ('+' + num) : '' + num,
+      d = pad.substr(0, len || 4);
+      
+	document.getElementById( id ).innerHTML = d;
+}
+
+var sphere = document.getElementById("sphere");
+
+
+if (window.DeviceMotionEvent != undefined) {
+	window.ondevicemotion = function(event) {
+		acc.ax = event.accelerationIncludingGravity.x;
+		acc.ay = event.accelerationIncludingGravity.y;
+		acc.az = event.accelerationIncludingGravity.z;
+		acc.e = event;
+	}
+	
+  var n = 0;
+	setInterval( function() {
+		var landscapeOrientation = window.innerWidth/window.innerHeight > 1;
+		if ( landscapeOrientation) {
+			acc.vx = acc.vx + acc.ay;
+			acc.vy = acc.vy + acc.ax;
+		} else {
+			acc.vy = acc.vy - acc.ay;
+			acc.vx = acc.vx + acc.ax;
+		}
+		acc.vx = acc.vx * 0.98;
+		acc.vy = acc.vy * 0.98;
+		acc.y = parseInt(acc.y + acc.vy / 50);
+		acc.x = parseInt(acc.x + acc.vx / 50);
+		
+		
+		J.get('accX').value( acc.ax );
+		J.get('accY').value( acc.ay );		
+    J.get('accZ').value( acc.az );
+		
+		if (n++ % 10 == 0) {
+//		  var tmp = e.accelerationIncludingGravity;
+		  
+          		  
+/*		p("rotationAlpha", e.rotationRate.alpha);
+  		p( "rotationBeta", e.rotationRate.beta);
+  		p("rotationGamma", e.rotationRate.gamma); */
+      // p("vx", acc.vx, 6);
+      // p("vy", acc.vy, 6);
+  		
+		}
+		boundingBoxCheck();
+		
+		sphere.style.top = acc.y + "px";
+		sphere.style.left = acc.x + "px";
+		
+	}, 50);
+} 
+
+
+function boundingBoxCheck(){
+	if (acc.x<0) { acc.x = 0; acc.vx = -acc.vx / 2; }
+	if (acc.y<0) { acc.y = 0; acc.vy = -acc.vy / 2; }
+	if (acc.x>document.documentElement.clientWidth-20) { acc.x = document.documentElement.clientWidth-20; acc.vx = -acc.vx / 2; }
+	if (acc.y>document.documentElement.clientHeight-20) { acc.y = document.documentElement.clientHeight-20; acc.vy = -acc.vy / 2; }
+	
+  // if (vy < 5.5 && vy > -5.5) vy = 0;
+  // if (vx < 5.5 && vx > 5.5 ) vx = 0;
+}
+
+</script>
+
+
+
+<script type="text/coffeescript">
+  # webkitCompassHeading or webkitCompassAccuracy
+  
+  record = 
+    compass: (e) -> J.pumpInput compass: e.webkitCompassHeading
+    mouse:   (e) -> J.get('mouse').value [ e.clientX, e.clientY ]
+    touch:   (e) ->
+      tmp = {}
+      _(e.originalEvent.touches).each (touch, n) -> tmp['finger' + n] = [ touch.pageX, touch.pageY ]
+      J.pumpInput tmp
+      false
+      
+
+  $ ->
+    $(window).bind 'mousemove',         record.mouse
+    
+    $('body').bind 'touchstart',        record.touch
+    $('body').bind 'touchmove',         record.touch
+
+    window.addEventListener 'deviceorientation', record.compass
+
+    $('#toggle_random').click -> settings.toggle 'random'
+    $('#toggle_pause').click  -> settings.toggle 'pause'
+</script>
+
+</html>

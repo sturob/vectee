@@ -1,0 +1,89 @@
+{
+  "functions": {
+    "canvas": "return;\ncontext.fillStyle=\"#111\";\ncontext.font = \"Bold \" + int(font_size) + \"px Helvetica\";\ncontext.globalCompositeOperation = \"xor\";\n\nvar lines = [ 'Breton&', 'Breton&', \"Breton&\", \"Breton.\" ],\n    kern  = [ 0, .33, .34, .386, .365, .395, .42, .42, .35, .356 ],\n    x_off = 0, y_off = 0;\n\n$(lines).each(function(line_n, text) {  \n  $(text.split('')).each( function(letter_n, letter) {\n    context.fillText(\n      letter,\n      x_off + (font_size * (letter_n + 1) * kern[letter_n]), \n      y_off + (line_n + 1) * line_height\n    );\n  });\n});\n\n\n\n\n\n",
+    "paperjs": "/* v.path.strokeColor = '#000'; v.path.strokeWidth = 0; */\nv.path.fillColor = '#000';\n\nvar fours = n % 4, // = 0..3\n    even  = n % 8 > 3,\n    bar_y = Math.floor( n / 4 ) * scale,\n    xp    = [    -1,  v.width + 1,  v.width + 1,       -1 ],\n    yp    = [ bar_y,        bar_y,        bar_y,    bar_y ];\n\nvar b = mod(n  , 2) % 4, r = mod(n+1, 2) % 4,\n    t = mod(n+2, 2) % 4, l = mod(n+3, 2) % 4;\n    \nvar huh = l * ((333 * mod(n, 4)) % 19 % A) * B +\n          r * ((333 * mod(n, 4)) % 19 % A) * B + ((333*n) % 19 % A) * rand;\n\nyp[0] +=  gap + huh;\nyp[1] +=  gap + huh;\nyp[2] += -gap + huh;\nyp[3] += -gap + huh;\n\nreturn {  x: xp[fours],  \n          y: yp[fours] + scale/2  };\n",
+    "initial": "\n\n\n\n"
+  },
+  "parameters": {
+    "scale": {
+      "initial": 22,
+      "raw": 0,
+      "formula": "coax(this.wtf, 2, 200)",
+      "value": 22,
+      "weight": 0,
+      "manual": 0,
+      "history": [],
+      "history_length": 50,
+      "id": "scale"
+    },
+    "B": {
+      "initial": 2,
+      "raw": 0,
+      "formula": "coax(this.wtf, 0, 10)",
+      "value": 2,
+      "weight": 0,
+      "manual": 0,
+      "history": [],
+      "history_length": 50,
+      "id": "B",
+      "curve": ""
+    },
+    "A": {
+      "initial": 2,
+      "raw": 0,
+      "formula": "coax(this.wtf, 0, 10)",
+      "value": 2,
+      "weight": null,
+      "manual": 0,
+      "history": [],
+      "history_length": 50,
+      "id": "A"
+    },
+    "font_size": {
+      "initial": "2",
+      "raw": 0,
+      "formula": "130",
+      "value": "2",
+      "weight": 0,
+      "manual": 0,
+      "history": [],
+      "history_length": 50,
+      "id": "font_size",
+      "curve": ""
+    },
+    "line_height": {
+      "initial": 20,
+      "raw": 0,
+      "formula": "coax(.9, 0, 1) * font_size",
+      "value": 20,
+      "weight": null,
+      "manual": 0,
+      "history": [],
+      "history_length": 50,
+      "id": "line_height"
+    },
+    "gap": {
+      "initial": 5.4,
+      "raw": 0,
+      "formula": "coax(this.wtf, 0, 20)",
+      "value": 5.4,
+      "weight": 0,
+      "manual": 0,
+      "history": [],
+      "history_length": 50,
+      "id": "gap",
+      "curve": ""
+    },
+    "rand": {
+      "initial": 6,
+      "raw": 0,
+      "formula": "coax( this.wtf, 0, 1 )",
+      "value": 6,
+      "weight": null,
+      "manual": 0,
+      "history": [],
+      "history_length": 50,
+      "id": "rand"
+    }
+  }
+}
