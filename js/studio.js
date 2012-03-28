@@ -95,11 +95,12 @@ var CurrentVersion = {
 window.Design = {
   load: function(id) {
     paused = true;
-    $.getJSON('/~stu/web-skeleton/data/' + id + '/concept.json', function(data) {        
+    $.getJSON('/data/' + id + '/concept.json', function(data) {
       J = new Snorkle({}, { design: id, change: _.throttle(changed, 100) });
         
       if (J.isEmpty()) { // TODO: attempt to load latest.json + set J from them
         alert('couldnt load parameters');
+        return;
       }
     
       canvas.addElement();
