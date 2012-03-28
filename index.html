@@ -13,7 +13,8 @@
 
   <script type="text/javascript">
     var CONFIG = {
-      devMode: (window.location.hostname.substr(0,3) == '192' || 
+      devMode: (window.location.hostname.substr(-3)  == 'dev' ||
+                window.location.hostname.substr(0,3) == '192' || 
                 window.location.hostname == 'localhost' || window.location.origin == "file://")
     };
     
@@ -23,8 +24,9 @@
       l.href = 'less/main.less';
     }
 
-    function js (file) {
-      document.write( unescape("%3Cscript src='js/" + file + "' type='text/javascript'%3E%3C/script%3E") );
+    function js (file, custom) {
+      var pre = custom ? '' : 'base/';
+      document.write( unescape("%3Cscript src='" + pre + "js/" + file + "' type='text/javascript'%3E%3C/script%3E") );
     }
 
     if (CONFIG.devMode) {
@@ -33,13 +35,15 @@
     }
     js( 'lib/jquery-1.7.min.js' );
     js( 'lib/underscore.js' );
+    js( 'lib/backbone.js' );
+
     js( 'utils.js' );
     js( 'lib/input/seedrandom.js' );
     
-    js( 'lib/custom/dat.gui.js' );
+    // js( 'lib/custom/dat.gui.js' );
     js( 'lib/canvas/paper.js' );
-    js( 'custom/vectee.js' );
-    js( 'main.js' );
+    js( 'vectee.js', true );
+    js( 'main.js',   true );
 
   </script>
 
