@@ -26,7 +26,7 @@
 
     function js (file, custom) {
       var pre = custom ? '' : 'base/';
-      document.write( unescape("%3Cscript src='" + pre + "js/" + file + "' type='text/javascript'%3E%3C/script%3E") );
+      document.write( unescape("%3Cscript src='/" + pre + "js/" + file + "' type='text/javascript'%3E%3C/script%3E") );
     }
 
     if (CONFIG.devMode) {
