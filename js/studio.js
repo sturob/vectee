@@ -95,12 +95,39 @@ var CurrentVersion = {
 window.Design = {
   load: function(id) {
     paused = true;
-    $.getJSON('/data/' + id + '/concept.json', function(data) {
-      J = new Snorkle({}, { design: id, change: _.throttle(changed, 100) });
-        
-      if (J.isEmpty()) { // TODO: attempt to load latest.json + set J from them
-        alert('couldnt load parameters');
+    
+    async.parallel({
+      concept: function(done) {
+        $.getJSON('/data/' + id + '/concept.json', function(data) {
+          done(null, data)
+        }).error(function(){ 
+          done('bad JSON in concept.json') 
+        });
+      },
+      version: function(done) {
+        $.getJSON('/data/' + id + '/1.json', function(data) {
+          done(null, data)
+        }).error(function(){ 
+          done('bad JSON in 1.json') 
+        });
+      }
+    }, function(err, design) {
+      if (err) {
+        console.log(err);
         return;
+      }
+      
+      J = new Snorkle({}, { design: id, change: _.throttle(changed, 100) });
+
+      if (J.isEmpty()) { // TODO: attempt to load latest.json + set J from them
+        console.log('loading parameters from version....');
+        _(design.version.parameters).each(function(p) {
+          delete( p.value );
+          var param = ParamsList.create( p );
+          GlobalSnorkle.addParam( param );
+
+//          J.addParam({ id: para.id });
+        });
       }
     
       canvas.addElement();
@@ -118,15 +145,17 @@ window.Design = {
       // load code
       _(editors).each(function(editor, key) {
         var session = editor.ace.getSession();
-        var saved_f = localStorage.getItem( CurrentVersion.id + '_' + key ) || ''; // TODO load from latest.json if null
+        var saved_f = localStorage.getItem( CurrentVersion.id + '_' + key ) || 
+                      design.version.functions[key] || '';
         session.setValue( saved_f );
       });
   
       $('.tabs a:first-child').click(); // TODO remember
     
-      if (! SAFE_MODE) Design.init( data.defaultBackground );
+      if (! SAFE_MODE) Design.init( design.concept.defaultBackground );
       paused = false;
-    }).error(function() { alert('bad JSON in concept.json :/') });
+    });
+    
   },
   init: function(bg) {
     v = { inputs: J.reals };
@@ -236,7 +265,7 @@ $(function() {
   });
 
   
-  Design.load( localStorage.getItem( 'tudio::current_design') || 'breton' );
+  Design.load( localStorage.getItem( 'tudio::current_design') || 'dotboom' );
 });
 
 
