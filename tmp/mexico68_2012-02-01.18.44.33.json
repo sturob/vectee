@@ -1,0 +1,20 @@
+{
+  "functions": {
+    "canvas": "/*var x = 170, y = 342, text = 'x';\n\ncontext.fillStyle = \"#000\";\ncontext.globalCompositeOperation = \"xor\";\ncontext.textColor = 'black';\n\nfor (var i = 0; i < 20; i++) {\n  var font_size = 80 + (i * 16);\n  context.font = \"Bold \" + int(font_size) + \"px Helvetica\";\n  context.fillText( text, x - (i * 4), y + (i* 4)  );\n}\n*/",
+    "paperjs": "paper.project.layers[0].removeChildren();\n\nvar text = new PointText(new Point(250, 300));\ntext.justification = 'center';\ntext.fillColor = 'black';\ntext.fontSize = 120;\ntext.font = 'Helvetica';\ntext.content = 'e';",
+    "initial": ""
+  },
+  "parameters": {
+    "yeah": {
+      "initial": 0,
+      "raw": 0,
+      "formula": "",
+      "id": "yeah",
+      "history_length": 50,
+      "history": [
+        null,
+        null
+      ]
+    }
+  }
+}

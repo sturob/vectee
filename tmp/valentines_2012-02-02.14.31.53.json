@@ -1,0 +1,22 @@
+{
+  "functions": {
+    "canvas": "\n\n\n\n\n",
+    "paperjs": "paper.project.layers[0].removeChildren();\n\nvar p    = new paper.Path(),\n    size = view.getSize(),\n    density = 400;\n\n_.extend( p, { fullySelected: false,  strokeColor: 'black',  strokeWidth: .2 });\n//p.dashArray     = [1,1];\n\n//p.add( new Point( -1, size.height / 2 ) );\n\nfor (var x = -1, step = 0.0004; x < 1; x += step) {   if (step <= 0) return;\n  var y = Math.pow( 4.0 - x * x, 0.1 ) *\n        ( Math.sqrt(Math.cos( 1.7*x )) * Math.cos( density*x ) + Math.sqrt(Math.abs(x) ) ),\n      real_x = size.width/3 * x + size.width/2,\n      real_y = size.height/2 - (y * size.height/6.2);\n      \n  p.add( new Point( real_x, real_y ) );\n}\n\n//p.add( new Point( size.width, size.height / 2 ) );\n\n",
+    "initial": "\n\n\n\n\n"
+  },
+  "parameters": {
+    "huh": {
+      "initial": "1",
+      "raw": 0,
+      "formula": "1",
+      "id": "huh",
+      "history_length": 50,
+      "history": [
+        null,
+        null,
+        null,
+        null
+      ]
+    }
+  }
+}
