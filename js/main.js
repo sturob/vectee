@@ -17,17 +17,20 @@ var changed = function() {
 }
 
 $(function() {
+
+  // raw_params 
+  
   canvas.addElement();
   paper.install( window );
   paper.setup( canvas.el ); // Create an empty project and a view for the canvas
   
-  var alt_design = window.location.hash.substr(1);
+  window.alt_design = window.location.hash.substr(1);
 
   var d = alt_design || 'blocks';
 
   $.get( '/data/' + d + '/latest.json', function(design) {
     window.design = design;
-    load_design( design )
+    load_design( design );
   });
   
   (function animloop() {
@@ -85,6 +88,8 @@ function load_design(design) {
   window.ev = new tickEvent();
   window.gui.destroy();
   window.gui = new dat.GUI();
+
+  document.title = window.alt_design + " (v" + design.iteration + ") -- vectee";
 
   for (p in design.parameters) {
     raw_params[p] = 0.5; // crappy defaults, but need raw initial value
