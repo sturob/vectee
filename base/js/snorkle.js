@@ -230,6 +230,13 @@ Model.Param = Model.Var.extend({
     
     return this;
   },
+  toJSON: function() {
+    var tmp = a = _.clone( this.attributes );
+    delete( tmp.history );
+    delete( tmp.history_length );
+    delete( tmp.value );
+    return tmp;
+  },
   calculateEntered: function(formula) {
     var f, ok = true;
 

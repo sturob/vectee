@@ -55,22 +55,26 @@ var CONCEPTS = [  // concepts to display in studio
 var CurrentVersion = {
   //  functions:  {},  //  parameters: {},  // id: '',
   // number: 0,
+  iteration: 0,
   
   // methods
   setID: function(id) {
     CurrentVersion.id = id;
+    localStorage.setItem( 'tudio::current_design', CurrentVersion.id );
     // + do whatever else needs doing...
   },
   saveVersion: function() {
-    var data = CurrentVersion.asJSON( CurrentVersion.id );
+    CurrentVersion.iteration++;
+    var data = CurrentVersion.asJSON();
+    
     $.ajax({
-      type: 'POST',  url: 'http://localhost:6969/' + CurrentVersion.id,
+      type: 'POST',  url: 'http://localhost:6969/' + CurrentVersion.id + '/' + CurrentVersion.iteration,
       data: JSON.stringify( data ),  dataType: 'json'
     });
   }, // to disk via node.js
   asJSON: function() {
     var the_dump = {
-      functions: {}, parameters: {}
+      functions: {}, parameters: {}, iteration: CurrentVersion.iteration
     };
 
     _( localStorage.getItem(CurrentVersion.id).split(',') ).each( function(it, n) {
@@ -105,28 +109,28 @@ window.Design = {
         });
       },
       version: function(done) {
-        $.getJSON('/data/' + id + '/1.json', function(data) {
+        $.getJSON('/data/' + id + '/latest.json', function(data) {
           done(null, data)
         }).error(function(){ 
-          done('bad JSON in 1.json') 
+          done('bad JSON in latest.json') 
         });
       }
-    }, function(err, design) {
+    }, function(err, design) { // we should have loaded the design
       if (err) {
         console.log(err);
         return;
       }
+
+      CurrentVersion.iteration = design.version.iteration || 0;
       
       J = new Snorkle({}, { design: id, change: _.throttle(changed, 100) });
 
-      if (J.isEmpty()) { // TODO: attempt to load latest.json + set J from them
+      if (J.isEmpty()) { // no parameters locally, load from latest version
         console.log('loading parameters from version....');
         _(design.version.parameters).each(function(p) {
-          delete( p.value );
+          delete( p.value ); // TODO remove
           var param = ParamsList.create( p );
           GlobalSnorkle.addParam( param );
-
-//          J.addParam({ id: para.id });
         });
       }
     
@@ -136,8 +140,7 @@ window.Design = {
       changed();
       window.ev = new tickEvent();
       
-      CurrentVersion.setID( id ); // TODO save this var automatically in LocalStorage instead of...
-      localStorage.setItem( 'tudio::current_design', CurrentVersion.id );
+      CurrentVersion.setID( id );
       
       console.log('loading design: ' + id);
       $('#design_picker option#' + id).attr({ selected: true }); // make sure
