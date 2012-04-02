@@ -9,20 +9,23 @@ var hack,
     refresh   = false, // whether or not something has changed + thus we should run onFrame
     animating = false; // we're animating so don't reset refresh to false 
 
+window.adjust = function() {}; // placeholder
+window.canvas = new Canvas;
+  
 var changed = function() {
   refresh = true;
 }
 
 $(function() {
+  canvas.addElement();
   paper.install( window );
   paper.setup( canvas.el ); // Create an empty project and a view for the canvas
-  canvas.resize({ }, changed); // setup
   
   var alt_design = window.location.hash.substr(1);
 
   var d = alt_design || 'blocks';
 
-  $.get( 'js/designs/' + d + '.json', function(design) {
+  $.get( '/data/' + d + '/latest.json', function(design) {
     window.design = design;
     load_design( design )
   });

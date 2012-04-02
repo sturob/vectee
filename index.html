@@ -33,14 +33,14 @@
       js( 'lib/less.js' );
       js( 'dev.js' );
     }
-    js( 'lib/jquery-1.7.min.js' );
+    js( 'lib/jquery/jquery.js' );
     js( 'lib/underscore.js' );
     js( 'lib/backbone.js' );
 
     js( 'utils.js' );
-    js( 'lib/input/seedrandom.js' );
+    js( 'lib/custom/seedrandom.js' );
     
-    // js( 'lib/custom/dat.gui.js' );
+    js( 'lib/custom/dat.gui.js' );
     js( 'lib/canvas/paper.js' );
     js( 'vectee.js', true );
     js( 'main.js',   true );
@@ -127,7 +127,7 @@
 
 <body class="">
   <div id="main">
-    <canvas id="canvas" keepalive="true" width='610' height='860'></canvas>
+    <div id="canvas"></div>
     <img src="images/t-black.jpg" id="t">
   </div>
   

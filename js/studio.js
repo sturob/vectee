@@ -31,8 +31,6 @@ paper.install( window );
 
 // -------------------------------------------
 //  design = (concept > versions > creations)
-//      /concept/version/creation
-//      /blocks/10/2
 // -------------------------------------------
 
 var CONCEPTS = [  // concepts to display in studio
@@ -47,11 +45,6 @@ var CONCEPTS = [  // concepts to display in studio
 //    - directly for functions
 //    - thru Snorkle for parameters
 
-// savetofile.js now needs to save:
-//  - version numbers!
-
-// when do you know to increment number?
-
 var CurrentVersion = {
   //  functions:  {},  //  parameters: {},  // id: '',
   // number: 0,
@@ -63,7 +56,7 @@ var CurrentVersion = {
     localStorage.setItem( 'tudio::current_design', CurrentVersion.id );
     // + do whatever else needs doing...
   },
-  saveVersion: function() {
+  saveVersion: function() { // TODO: save thumbnail as well
     CurrentVersion.iteration++;
     var data = CurrentVersion.asJSON();
     
