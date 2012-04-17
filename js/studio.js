@@ -20,8 +20,8 @@ window.onFrame    = function() {};
 window.J          = {};
 
 window.editors = {
-      'paperjs': { f: function() {} }, // called as onFrame
       'initial': { f: function() {} },  // called on init
+      'paperjs': { f: function() {} }, // called as onFrame
       'canvas':  { f: function() {} }, // called when the canvas is at rest
     };
 
@@ -204,16 +204,12 @@ window.Design = {
 }; 
 
 
-
-
-
-
 // serious stuff
 $(function() {
 
   // generate a function to deal with changes to code for :key
   function code_change_for(key) { 
-    return _.debounce(function(ev) {
+    var changer = function(ev) {
       var ed = editors[key],
           f_text = ed.ace.getSession().getValue(),
           error_last_time = !! ed.error;
@@ -229,7 +225,7 @@ $(function() {
   			ed.f = new Function('ev', 'n', 'with (v.inputs) { ' + f_text + '\n } ');
       } catch (e) {
   			ed.error = e;
-        inform_of_error(e);
+        inform_of_error( e );
       }
 
   		if (! ed.error) {
@@ -237,7 +233,13 @@ $(function() {
         changed();
   		}
       localStorage.setItem( CurrentVersion.id + "_" + key, f_text ); // save
-    }, 500);
+    };
+    
+    if (key == 'paperjs') {
+      changer = _.debounce( changer, 500 )
+    }
+
+    return changer;
   }
   
   // setup code editors
@@ -256,18 +258,20 @@ $(function() {
     session.setValue( '' );
     
     // bindings
-    console.log('loading code for ' + key)
+    console.log('loading code for ' + key);
     editor.onChange = code_change_for( key );
     session.on('change', editor.onChange);
   });
 
-  
+
   Design.load( localStorage.getItem( 'tudio::current_design') || 'dotboom' );
+
+
 });
 
 
 
-// ******************
+// ==================
 //    UI
 // ==================
 
