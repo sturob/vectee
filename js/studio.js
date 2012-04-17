@@ -20,9 +20,9 @@ window.onFrame    = function() {};
 window.J          = {};
 
 window.editors = {
-      'canvas':  { f: function() {} }, // called when the canvas is at rest
       'paperjs': { f: function() {} }, // called as onFrame
-      'initial': { f: function() {} }  // called on init
+      'initial': { f: function() {} },  // called on init
+      'canvas':  { f: function() {} }, // called when the canvas is at rest
     };
 
 window.canvas = new Canvas;
@@ -73,6 +73,7 @@ var CurrentVersion = {
     _( localStorage.getItem(CurrentVersion.id).split(',') ).each( function(it, n) {
       the_dump.parameters[it] = JSON.parse( localStorage.getItem(CurrentVersion.id + '-' + it) );
     });
+    
     _(editors).each( function(it, editor) {
       the_dump.functions[editor] = localStorage.getItem( CurrentVersion.id + "_" + editor );
     });
@@ -278,6 +279,7 @@ $(function() {
     $('.tabs a').removeClass('active'); $(this).addClass('active');
     $('.editor').hide();
     $('.editor#'+ id).show();
+   editors[id.split('_')[0]].ace.resize();
     return false;
   });
   
