@@ -28,10 +28,30 @@ $(function() {
 
   var d = alt_design || 'blocks';
 
-  $.get( '/data/' + d + '/latest.json', function(design) {
+  async.parallel({
+    concept: function(done) {
+      $.getJSON('/data/' + d + '/concept.json', function(data) {
+        done(null, data)
+      }).error(function(){ 
+        done('bad JSON in concept.json') 
+      });
+    },
+    version: function(done) {
+      $.getJSON('/data/' + d + '/latest.json', function(data) {
+        done(null, data)
+      }).error(function(){ 
+        done('bad JSON in latest.json') 
+      });
+    }
+  }, function(err, design) { // we should have loaded the design
+    if (err) {
+      alert(err);
+      return;
+    }
     window.design = design;
     load_design( design );
   });
+  
   
   (function animloop() {
     requestAnimFrame( animloop );
@@ -52,7 +72,7 @@ var Randomise = {
     animating = true;
     refresh   = true;
     var change = 0.33,
-        keys   = _(design.parameters).keys(),
+        keys   = _(design.version.parameters).keys(),
         key    = keys[ Math.floor( keys.length * Math.random() ) ];
         old_value = raw_params[key],
         new_value = Math.random();
@@ -73,41 +93,42 @@ var Randomise = {
   },
   all: function() {
     animating = true;
-    var stop = _.after( _(design.parameters).keys().length, function () { animating = false; });
+    var stop = _.after( _(design.version.parameters).keys().length, function () { animating = false; });
   
-    for (p in design.parameters) {
+    for (p in design.version.parameters) {
       $(raw_params).animate( kv(p, Math.random()), stop );
     }
   }
 }
 
 
-function load_design(design) {    
-  var frame_f = new Function('ev', 'n', 'with (v) { ' + design.functions.paperjs + '\n } ');
+function load_design(design) {
+  var version = design.version;
+  var frame_f = new Function('ev', 'n', 'with (v) { ' + version.functions.paperjs + '\n } ');
   
   window.ev = new tickEvent();
   window.gui.destroy();
   window.gui = new dat.GUI();
 
-  document.title = window.alt_design + " (v" + design.iteration + ") -- vectee";
+  document.title = window.alt_design + " (v" + version.iteration + ") -- vectee";
 
-  for (p in design.parameters) {
+  for (p in version.parameters) {
     raw_params[p] = 0.5; // crappy defaults, but need raw initial value
     // add slider
     gui.add( raw_params, p, 0, 1 ).step( 0.001 ).listen().onChange( function(value) {
       refresh = true;
     });
     
-    design.parameters[p].f = new Function( "with (this) {\nreturn " + design.parameters[p].formula + "\n}" );
+    version.parameters[p].f = new Function( "with (this) {\nreturn " + version.parameters[p].formula + "\n}" );
   }
 
   apply_para_functions( raw_params );
   Randomise.all();
   
   function apply_para_functions(inputs) {
-    for (p in design.parameters) {
+    for (p in version.parameters) {
       hack = inputs[p]; // bleugh
-      coaxed_params[p] = design.parameters[p].f.call( inputs );
+      coaxed_params[p] = version.parameters[p].f.call( inputs );
     }
   }
 
