@@ -1,0 +1,69 @@
+{
+  "functions": {
+    "initial": "    v.points = 800;\n    v.smooth = false;\n  \n    v.path = new Path();\n  \tv.path.strokeWidth = 0;\n    v.path.closed = false;\n\n    v.initializePath = function (points) {\n      v.center = view.center;\n      v.width  = view.size.width;\n      v.height = view.size.height / 2;\n\t\t\t\n      v.path.segments = [];\n      for (var i = 0; i < points; i++) {\n        var point = new Point(v.width / points * i, view.center.y);\n        v.path.add(point);\n      }\n      v.path.fullySelected = false;\n    }\n    v.initializePath(v.points);\n",
+    "paperjs": "v.path.strokeColor = '#000'; \n//v.path.strokeWidth = 0; //v.path.fillColor = '#000';\n\nfor (var n = 0; n < v.points; n++) {\n  var fours = n % 4, // = 0..3\n      even  = n % 8 > 3,\n      bar_y = Math.floor( n / 4 ),\n      xp    = [    -1,  v.width + 1,  v.width + 1,       -1 ],\n      yp    = [ bar_y,        bar_y,        bar_y,    bar_y ];\n\n  var b = mod(n  , 2) % 4, r = mod(n+1, 2) % 4,\n      t = mod(n+2, 2) % 4, l = mod(n+3, 2) % 4;\n    \n  var huh = l * ((333 * mod(n, 4)) % 19 % A) * B +\n          r * ((333 * mod(n, 4)) % 19 % A) * B + ((333*n) % 19 % A) * rand;\n\n  yp[0] +=  gap + huh;\n  yp[1] +=  gap + huh;\n  yp[2] += -gap + huh;\n  yp[3] += -gap + huh;\n\n  v.path.segments[n].point.x= adjust( xp[fours] );\n  v.path.segments[n].point.y = adjust( yp[fours] );\n}",
+    "canvas": "return;\ncontext.fillStyle=\"#111\";\ncontext.font = \"Bold \" + int(font_size) + \"px Helvetica\";\ncontext.globalCompositeOperation = \"xor\";\n\nvar lines = [ 'Breton&', 'Breton&', \"Breton&\", \"Breton.\" ],\n    kern  = [ 0, .33, .34, .386, .365, .395, .42, .42, .35, .356 ],\n    x_off = 0, y_off = 0;\n\n$(lines).each(function(line_n, text) {  \n  $(text.split('')).each( function(letter_n, letter) {\n    context.fillText(\n      letter,\n      x_off + (font_size * (letter_n + 1) * kern[letter_n]), \n      y_off + (line_n + 1) * line_height\n    );\n  });\n});\n\n\n\n\n\n"
+  },
+  "parameters": {
+    "scale": {
+      "initial": 22,
+      "raw": 0,
+      "formula": "coax( slider, 2, 200)",
+      "weight": 0,
+      "manual": 0.89,
+      "id": "scale"
+    },
+    "B": {
+      "initial": 2,
+      "raw": 0,
+      "formula": "coax(slider, 0, 10)",
+      "weight": 0,
+      "manual": 0.17,
+      "id": "B",
+      "curve": ""
+    },
+    "A": {
+      "initial": 2,
+      "raw": 0,
+      "formula": "coax(slider, 0, 10)",
+      "weight": 0,
+      "manual": 0,
+      "id": "A"
+    },
+    "font_size": {
+      "initial": "2",
+      "raw": 0,
+      "formula": "130",
+      "weight": 0,
+      "manual": 0,
+      "id": "font_size",
+      "curve": ""
+    },
+    "line_height": {
+      "initial": 20,
+      "raw": 0,
+      "formula": "coax(slider, 0, 1) * font_size",
+      "weight": null,
+      "manual": 0.28,
+      "id": "line_height"
+    },
+    "gap": {
+      "initial": 5.4,
+      "raw": 0,
+      "formula": "coax(slider, 0, 20)",
+      "weight": 0,
+      "manual": 1,
+      "id": "gap",
+      "curve": ""
+    },
+    "rand": {
+      "initial": 6,
+      "raw": 0,
+      "formula": "coax( slider, 0, 10 )",
+      "weight": null,
+      "manual": 0,
+      "id": "rand"
+    }
+  },
+  "iteration": 2
+}
