@@ -402,7 +402,7 @@ function inform_of_error(e) {
 
 
 function setBG(color) {
-  $('#t').css({ backgroundColor: color  });
+  $('#t').css({ backgroundColor: color });
   $('#canvas canvas').globalcss( 'background-color', color );
 }
 

@@ -1,0 +1,36 @@
+{
+  "functions": {
+    "initial": "// v is passed to the main loop as with(v)\nv.points = 399;\n \nv.path = new Path();\nv.path.closed = false;\nv.path.strokeColor = '#ff0';\nv.path.fullySelected = false;\nv.path.strokeWidth = 0;\n\nv.initializePath = function (points) {\n  v.center = view.center;\n  v.width  = view.size.width;\n  v.height = view.size.height / 2;\n\n  v.path.segments = [];\n  for (var i = 0; i < points; i++) {\n    var point = new Point( v.width / points * i, view.center.y );\n    v.path.add(point);\n  }\n};\n\nv.initializePath( v.points );\n\n",
+    "paperjs": "v.path.strokeWidth = adjust( thick );\nv.path.strokeColor = '#888';\n\nfor (var i = 0; i < v.points; i++) {\n  var b = i % 2,\n      c = Math.floor(i / 2)   * vert,\n      d = Math.sin(i * 10000) * wiggle,\n      x = adjust( 10 + b * (v.width - 20) ),\n      y = adjust( 10 + d + c );\n\n  if (y > 740) {\n    x = v.path.segments[i - 1].point.x;\n    y = v.path.segments[i - 1].point.y  + i;\n  }\n  \n  v.path.segments[i].point.x = x;\n  v.path.segments[i].point.y = y;  \n}\n",
+    "canvas": "\n\n"
+  },
+  "parameters": {
+    "thick": {
+      "initial": 2,
+      "raw": 0,
+      "formula": "coax( slider, 0.1, 6 )",
+      "weight": 0,
+      "manual": 0.9400000000000001,
+      "id": "thick",
+      "curve": ""
+    },
+    "wiggle": {
+      "initial": 1,
+      "raw": 0,
+      "formula": "coax( slider, -2, 2 )",
+      "weight": 0,
+      "manual": 0.51,
+      "id": "wiggle",
+      "curve": ""
+    },
+    "vert": {
+      "initial": 40,
+      "raw": 0,
+      "formula": "coax( slider,  0, 200 )",
+      "weight": null,
+      "manual": 0.34,
+      "id": "vert"
+    }
+  },
+  "iteration": 8
+}

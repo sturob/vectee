@@ -1106,6 +1106,8 @@ SVGCanvas.prototype.fillRect = function (x, y, w, h) {
 
 SVGCanvas.prototype.clearRect = function (x, y, w, h) {
     //log("clearRect(): this.currentGroup=", this.currentGroup);
+    console.log('warning: clearRect() not supported');
+    return;
     var rect = this.svg.RECT({'x':x,
                               'y':y,
                               'width':w,

@@ -1,4 +1,21 @@
-#!/usr/bin/node
+#!/usr/local/bin/node
+
+var express = require('express');
+var application = express.createServer();
+
+application.get('/', function(request, response) {
+    response.send('valid call is: POST /add/:filename.:file_type');
+});
+
+application.listen(7070);
+
+
+
+
+
+
+
+/*
 
 var querystring = require('querystring'),
     fs          = require('fs');
@@ -51,3 +68,5 @@ require("http").createServer(function(request, response) {
     });
   }
 }).listen(6969);
+
+*/
