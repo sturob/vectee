@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <title>paper.js playground</title>
+  
+  <meta name="viewport" content="width=device-width,user-scalable=no"/>
+  
+ 
+  <!-- <link rel="icon" href="favicon.ico" type="image/ico"> -->
+
+  <link id="style" rel="stylesheet" href="css/paper.css" type="text/css">
+
+  <script type="text/javascript">
+    var CONFIG = {
+      devMode: (window.location.hostname.substr(0,3) == '192' || 
+                window.location.hostname == 'localhost' || window.location.origin == "file://")
+    };
+    
+    if (CONFIG.devMode) { // switch in .less for dev
+      var l = document.getElementById('style');
+      l.rel = 'stylesheet/less';
+      l.href = 'less/paper.less';
+    }
+
+    function js (file) {
+      document.write( unescape("%3Cscript src='js/" + file + "' type='text/javascript'%3E%3C/script%3E") );
+    }
+
+    js( 'lib/jquery/jquery.js' );
+
+    if (CONFIG.devMode) {
+      js( 'lib/less.js' );
+      js( 'dev.js' );
+      js( 'lib/canvas/stats.js' );
+
+      // $(function() {
+      // });
+    }
+
+    js( 'lib/underscore.js' );
+    js( 'lib/canvas/paper.js' );
+    
+    js( 'lib/input/dat.gui.min.js' );
+    
+    js( 'utils.js' );
+    // js( 'main.js');
+  </script>
+
+  <script type="text/javascript">
+
+  var Kits = {
+    "Arsenal":      { "base": "red",                       "v": "white"   },
+    "Aston Villa":  { "base": "#72092E",  "h": "#00B9FF",  "v": "#00B9FF" },
+    "Blackburn":    { "base": "blue",                      "v": "white"   },
+    "Bolton":       { "base": "white",    "h": "#002266"                },
+    "Chelsea":      { "base": "#0A33FF"                               },
+    "Everton":      { "base": "blue",     "h": "black"                  },
+    "Fulham":       { "base": "white"                                 },
+    "Liverpool":    { "base": "red"                                   },
+    "Man City":     { "base": "#00B9FF"                               },
+    "Man United":   { "base": "red",      "h": "#ffffff"                },
+    "Newcastle":    { "base": "black",                     "v": "white"   },
+    "Norwich":      { "base": "yellow",   "h": "green"                  },
+    "QPR":          { "base": "white",    "h": "blue",     "v": "white"   },
+    "Stoke":        { "base": "red",                       "v": "white"   },
+    "Sunderland":   { "base": "red",      "h": "black",    "v": "white"   },
+    "Swansea":      { "base": "white"                                 },
+    "Tottenham":    { "base": "white"                                 },
+    "West Brom":    { "base": "black",                     "v": "white"   },
+    "Wigan":        { "base": "#0049DB",                   "v": "white"   },
+    "Wolves":       { "base": "#DB7F02",  "h": "black"                  }
+  };
+  
+  var viz = {
+    time:          0,
+    rounds:       36,
+    rounds_x:     25,
+    points_y:    9.5,
+    start_y:     340,
+    ascent_rate: 1.5
+  };
+
+  var drawFrame = true; // set when changing any variables
+
+  var matches = [],
+      teams   = {},
+      Team = function() {
+        this.goals = 0;
+        this.points = 0;
+        this.rounds = [];
+        return this;
+      },
+      targets = {        //   09   10   11
+        max              :   36 * 3,
+        min              :   0,
+        title            :   (90 + 86 + 80) / 3,
+        champions_league :   (72 + 70 + 68) / 3,
+        safety           :   (35 + 35 + 40) / 3
+      };
+      
+      
+  Team.prototype.addResult = function(scored, conceded) {
+    this.goals += scored;
+    this.points += (scored  > conceded) ? 3 :
+                   (scored == conceded) ? 1 : 0; 
+    var ppg = this.goals / (this.rounds.length + 1);
+    this.rounds.push({ goals: this.goals, points: this.points, ppg: ppg });
+
+    return this;
+  }
+
+  
+  $(function() {
+    var stats = new Stats();
+    stats.getDomElement().style.position = 'absolute';
+    stats.getDomElement().style.right = '0px';
+    stats.getDomElement().style.top = '0px';
+    document.body.appendChild( stats.getDomElement() );
+
+    setInterval( function () {
+
+        stats.update();
+
+    }, 1000 / 60 );
+
+    $.getJSON('data/prem.json', function(data){
+      matches = data;
+      
+      _(matches).each(function(m){
+        if (! teams[m.AwayTeam]) teams[m.AwayTeam] = new Team;
+        if (! teams[m.HomeTeam]) teams[m.HomeTeam] = new Team;
+      
+        teams[m.HomeTeam].addResult( m.FTHG - 0, m.FTAG - 0 );
+        teams[m.AwayTeam].addResult( m.FTAG - 0, m.FTHG - 0 );
+      });
+      
+      showViz();
+    });
+    
+    paper.install( window );
+    paper.setup( $('canvas')[0] ); // Create
+    
+    var p = new Path();
+    
+    var target_line = new Path();
+    _.extend( target_line, { fullySelected: 0,  strokeColor: '#000',  strokeWidth: .1, opacity: 0.5 });
+
+     
+    var rec = new Path.Rectangle(0, 0, viz.rounds_x * viz.rounds, 640);
+    rec.fillColor = '#aaa';
+    
+    _(targets).each(function(target, k) {
+      var tmp = target_line.clone();
+      tmp.segments[0].setPoint( 0, viz.start_y )
+      var y = viz.start_y - (target - (viz.ascent_rate * viz.rounds) ) * viz.points_y;
+      tmp.add( viz.rounds * viz.rounds_x, y);
+      
+      if (k == 'max' || k == 'min') {
+        tmp.add( 0, y );
+        tmp.fillColor = '#000';
+        tmp.opacity = 1;
+      }
+      
+      // if (k == 'champions_league') {
+      //   tmp.add( viz.rounds_x * viz.rounds, y );
+      // }
+      // safety   
+      
+    });
+    
+    _.extend( p, { fullySelected: 0,  strokeColor: '#888',  strokeWidth: 2, opacity: 0.8 });
+
+
+
+    window.group = new Group;
+    group.addChild( new Path.Rectangle(-480, 320, 960, 640) );
+    group.clipped = true;
+    // viz.rounds_x * viz.rounds
+
+    function showViz() {
+      _(teams).each(function(t,k) {
+        t.viz = p.clone();
+        group.addChild( t.viz );
+
+        if (Kits[k].base) {
+          t.viz.strokeColor = Kits[k].base;
+        }
+       
+        t.viz.segments[0].setPoint( 0, viz.start_y );
+      });
+
+      
+      for (i=0; i < 38; i++) {
+        _(teams).each(function(t) {
+          if (! t.rounds[i]) return;
+          t.viz.add( (1+i) * viz.rounds_x, viz.start_y - ( t.rounds[i].points - (viz.ascent_rate * (i+1)) ) * viz.points_y );
+          t.viz.smooth();
+          drawFrame = true;
+        });
+        i++;
+      }
+
+      
+      var tmp = { left: -480 };
+
+      $(tmp).animate({ left: 480 }, {
+        duration: 12000,
+        step: function() {
+          group.firstChild.setPosition( tmp.left, 320 );      
+          drawFrame = true;
+        }
+      });
+      
+
+      function colorTidy () {
+        return;
+        // for (var i = 0; i < viz.rounds; i++) {
+        //   var tmp = p.clone();
+        //   tmp.segments[0].setPoint( 620,  );
+        //   tmp.add( 640, )
+        // }
+        
+        _(teams).each(function(t, k) {
+          if (horizontal_color[k]) {
+            t.viz_overlay = t.viz.clone();
+            t.viz_overlay.strokeWidth = 1;
+            t.viz_overlay.strokeColor = horizontal_color[k];
+            t.viz_overlay.position.y++;
+          }
+        
+          if (vertical_color[k]) {
+            t.viz_overlay = t.viz.clone();
+            t.viz_overlay.strokeColor = vertical_color[k];
+            t.viz_overlay.dashArray = [4, 10];
+          }
+        });
+      }
+      
+    }
+    
+    
+    
+    (function animloop() {
+      requestAnimFrame( animloop );
+      if (! drawFrame) return;
+    
+      //window.onFrame( ev );
+      paper.view.draw();
+      drawFrame = false;
+    })();
+    
+  });
+  
+  </script>
+
+</head>
+
+<body>
+
+<canvas id="canvas" width="960" height="640">
+</canvas>
+
+</body>
+</html>
+
+<!-- <script type="text/javascript" src="http://use.typekit.com/hlx2kdo.js"></script>
+<script type="text/javascript">try{Typekit.load();}catch(e){}</script> -->
+
+<!-- <script src="http://www.google-analytics.com/urchin.js" type="text/javascript"> </script> 
+<script type="text/javascript"> 
+  _uacct = "UA-1333551-1";
+  if (! DEV) urchinTracker();
+</script> -->

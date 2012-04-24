@@ -77,7 +77,7 @@ function ls (obj, depth, original) { //
     original = obj;
   }
   
-  var indent = Array(depth * 4).join(" "),
+  var indent = Array(depth + 1).join('^') + " ",
       props  = Object.getOwnPropertyNames( obj ),
       parent = Object.getPrototypeOf( obj ),
       text   = '';
@@ -106,7 +106,7 @@ function ls (obj, depth, original) { //
       
   text = "\n" + indent + props.join('  ') + "\n";
 
-  return (parent ? text + ls(parent, ++depth, original) : text);
+  return (parent ? ls(parent, ++depth, original) + text : text);
 }
 
 

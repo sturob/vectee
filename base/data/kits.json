@@ -1,0 +1,22 @@
+{
+    "Arsenal":      { "base": "red",                       "v": "white"   },
+    "Aston Villa":  { "base": "#72092E",  "h": "#00B9FF",  "v": "#00B9FF" },
+    "Blackburn":    { "base": "blue",                      "v": "white"   },
+    "Bolton":       { "base": "white",    "h": "#002266"                },
+    "Chelsea":      { "base": "#0A33FF"                               },
+    "Everton":      { "base": "blue",     "h": "black"                  },
+    "Fulham":       { "base": "white"                                 },
+    "Liverpool":    { "base": "red"                                   },
+    "Man City":     { "base": "#00B9FF"                               },
+    "Man United":   { "base": "red",      "h": "#ffffff"                },
+    "Newcastle":    { "base": "black",                     "v": "white"   },
+    "Norwich":      { "base": "yellow",   "h": "green"                  },
+    "QPR":          { "base": "white",    "h": "blue",     "v": "white"   },
+    "Stoke":        { "base": "red",                       "v": "white"   },
+    "Sunderland":   { "base": "red",      "h": "black",    "v": "white"   },
+    "Swansea":      { "base": "white"                                 },
+    "Tottenham":    { "base": "white"                                 },
+    "West Brom":    { "base": "black",                    "v": "white"   },
+    "Wigan":        { "base": "#0049DB",                  "v": "white"   },
+    "Wolves":       { "base": "#DB7F02",  "h": "black"                  }
+}
