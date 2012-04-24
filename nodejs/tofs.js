@@ -3,8 +3,10 @@
 var express = require('express');
 var application = express.createServer();
 
+// we're gonna get .png .svg and .json
+
 application.get('/', function(request, response) {
-    response.send('valid call is: POST /add/:filename.:file_type');
+  response.send('valid call is: POST /add/:filename.:file_type');
 });
 
 application.listen(7070);
@@ -24,7 +26,7 @@ require("http").createServer(function(request, response) {
   var body = '';
   
   if (request.method != "POST") {
-    response.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
+    response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     response.end(''); 
   } else {
     request.setEncoding('utf8');
@@ -33,10 +35,10 @@ require("http").createServer(function(request, response) {
     });
 
 
-//    console.log(request);
+//  console.log(request);
 
     request.on('end', function () {
-      
+  
       var clean_date    = (new Date).toISOString().replace(/:|Z|T/g,'\.').slice(0,-5),
           req           = request.url.split('/');
 
