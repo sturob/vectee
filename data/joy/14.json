@@ -1,7 +1,7 @@
 {
   "functions": {
     "initial": "v.p = new Path();\n_.extend( v.p, { fullySelected: 0,  strokeColor: '#ccc', fillColor: '#000' });\nv.r = Math.seedrandom(\"ooo\");",
-    "paperjs": "paper.project.layers[0].removeChildren();\n\ntime = Date.now()/pace;\n\nvar n_seg = 60,\n    x_seg = (view.size.width - 10) / n_seg;\n\nfor (var i = 9; i < lines_n; i++) {\n  var new_p = v.p.clone(),\n      winding = 2.2 - PerlinNoise.noise(1, time/10, i*1) / 2;\n\n  new_p.segments[0].setPoint( adjust([ 10, i*spacing]) );\n  new_p.strokeWidth = adjust(thick);\n  for (var j = 3; j < n_seg; j++) {\n    var x = x_seg * j, //+ r2()*0,\n        y = i * spacing, bump,\n        guide = n_seg - Math.abs(n_seg/winding - j) * 3.6;\n\n    guide =  Math.pow( clamp(guide, 2, 800), 1.1 );\n    \n    bump = 2 * Math.pow(PerlinNoise.noise(x/x_noise, y/y_noise, time), 2);\n    y -= -2 + bump * guide;\n    \n    new_p.add(adjust([x, y]));\n  }\n  new_p.add( adjust([x + x_seg, i*spacing]) );\n}",
+    "paperjs": "paper.project.layers[0].removeChildren();\n\ntime = Date.now()/pace;\n\nvar n_seg = 50,\n    x_seg = (view.size.width - 10) / n_seg;\n\nfor (var i = 9; i < lines_n; i++) {\n  var new_p = v.p.clone(),\n      winding = 2.2 - PerlinNoise.noise(1, time/10, i*1) / 2;\n\n  new_p.segments[0].setPoint( adjust([ 10, i*spacing]) );\n  new_p.strokeWidth = adjust(thick);\n  for (var j = 3; j < n_seg; j++) {\n    var x = x_seg * j, //+ r2()*0,\n        y = i * spacing, bump,\n        guide = n_seg - Math.abs(n_seg/winding - j) * 3.6;\n\n    guide =  Math.pow( clamp(guide, 2, 800), 1.1 );\n    \n    bump = 2 * Math.pow(PerlinNoise.noise(x/x_noise, y/y_noise, time), 2);\n    y -= -2 + bump * guide;\n    \n    new_p.add(adjust([x, y]));\n  }\n  new_p.add( adjust([x + x_seg, i*spacing]) );\n}",
     "canvas": null
   },
   "parameters": {
@@ -18,7 +18,7 @@
       "raw": 0.5,
       "formula": "coax(slider, 1, 21)",
       "weight": null,
-      "manual": 0.14,
+      "manual": 0.08,
       "id": "thick"
     },
     "spacing": {
@@ -42,7 +42,7 @@
       "raw": 0.5,
       "formula": "coax(slider, 1, 200)",
       "weight": null,
-      "manual": 0.28,
+      "manual": 0.4,
       "id": "x_noise"
     },
     "y_noise": {
@@ -58,9 +58,9 @@
       "raw": 0.5,
       "formula": "coax(slider, 1, 30000)",
       "weight": null,
-      "manual": 0.25,
+      "manual": 0.09,
       "id": "pace"
     }
   },
-  "iteration": 15
+  "iteration": 14
 }

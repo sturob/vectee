@@ -186,9 +186,14 @@ window.Design = {
       update_fps();     // show frames per second
       J.updateReals();  //
 
-      if (_.isEqual( previous, v.inputs )) return false; // && function has not changed
-    	previous = _.clone( v.inputs );
-      J.recalculate();
+      if (! _.isEqual( previous, v.inputs )) {
+        previous = _.clone( v.inputs );
+        J.recalculate();
+      } else {
+        //return false; // && function has not changed  
+      }
+      
+    	
 
       window.onFrame( ev );
       paper.view.draw();
@@ -398,6 +403,28 @@ function inform_of_error(e) {
   } else {
     $('#editor .error_message').text('').hide();
   }
+}
+
+
+function saveGIF() {
+  var encoder = new GIFEncoder();
+  encoder.setDelay(50);
+  encoder.start();
+  
+  (function saveFrame(n) {
+    encoder.addFrame( canvas.el.getContext('2d') );
+    console.log('saved frame #' + n);
+    if (n--) saveFrame(n);
+  })(10);
+  
+  encoder.finish();
+
+  console.log('done');
+
+  var binary_gif = encoder.stream().getData()
+  var img     = 'data:image/gif;base64,' + encode64(binary_gif); 
+  meh.innerHTML = '<img src="'+img+'">';
+  $('#meh').show();
 }
 
 
