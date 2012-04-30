@@ -2,6 +2,7 @@
 window.SAFE_MODE  = (window.location.hash == '#safe');
 window.unfocused  = false; // really?
 window.paused     = SAFE_MODE;
+window.gifMode    = false;
 window.previous   = {};
 window.ev         = new tickEvent();
 
@@ -178,7 +179,7 @@ window.Design = {
     
     (function animloop() {
       requestAnimFrame( animloop );
-      if (paused || unfocused) {
+      if (paused || unfocused || gifMode) {
         fps.innerHTML = '0';
         return false;
       }
@@ -193,8 +194,6 @@ window.Design = {
         //return false; // && function has not changed  
       }
       
-    	
-
       window.onFrame( ev );
       paper.view.draw();
       drawPost = true; // for postCanvas... can't just run it here cos of timing issues :/
@@ -408,16 +407,37 @@ function inform_of_error(e) {
 
 function saveGIF() {
   var encoder = new GIFEncoder();
-  encoder.setDelay(50);
+  encoder.setDelay(300);
+  encoder.setRepeat(0);
+  encoder.setQuality(1);
   encoder.start();
-  
+  gifMode = true;
+
   (function saveFrame(n) {
-    encoder.addFrame( canvas.el.getContext('2d') );
+    
     console.log('saved frame #' + n);
-    if (n--) saveFrame(n);
+
+    ev.update();      // update the event var
+    J.updateReals();
+
+    if (! _.isEqual( previous, v.inputs )) {
+      previous = _.clone( v.inputs );
+      J.recalculate();
+    } else {
+      //return false; // && function has not changed  
+    }
+    
+    window.onFrame( ev );
+    paper.view.draw();
+    encoder.addFrame( canvas.el.getContext('2d') );
+      
+    if (n--) { 
+      saveFrame(n); 
+    }
   })(10);
   
   encoder.finish();
+  gifMode = false;
 
   console.log('done');
 
