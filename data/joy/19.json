@@ -1,0 +1,66 @@
+{
+  "functions": {
+    "initial": "paper.project.layers[0].removeChildren();\n\nv.p = new Path();\n_.extend( v.p, { fullySelected: 0,  strokeColor: '#eee', //fillColor: '#000' \n});\n\nv.r = Math.seedrandom(\"ooo\");\n\nv.lines = new Array(lines_n);\n\nfor (var i = 0; i < lines_n; i++) {\n  var new_p = v.p.clone();\n  v.lines[i] = new_p;\n}",
+    "paperjs": "time = ev.count/pace;\n\nvar n_seg = 60,\n    x_seg = (view.size.width - 10) / n_seg;\n\nfor (var i = 0; i < lines_n; i++) {\n\n  var line = v.lines[i],\n      winding = 2.2 - PerlinNoise.noise(1, time/10, i*1) / 2,\n      y_off = 0, //spacing * ev.count,\n      y = y_off + i * spacing;\n  \n  if (line.segments.length == 1) {\n    line.segments[0].setPoint( adjust([ 10, y ]) );\n    for (var j = 0; j < n_seg; j++) {\n      line.add(adjust([x, y]));\n    }\n    line.add( adjust([x + x_seg, y]) );\n  }\n  \n  line.strokeWidth = adjust(thick);\n\n  for (var j = 0; j < n_seg; j++) {\n    var x =  x_seg * j, //+ r2()*0,\n        bump,\n        guide = n_seg - Math.abs(n_seg/winding - j) * 3.6;\n\n    guide =  Math.pow( clamp(guide, 2, 800), 1.1 );\n    \n    bump = 2 * Math.pow(PerlinNoise.noise(x/x_noise, y/y_noise, time), 2);\n    \n    line.segments[j].setPoint( adjust([ x, y - 2 - bump * guide ]) );\n    //line.add(adjust([x, y - 2 - bump * guide]));\n  }\n  \n  line.segments[n_seg].setPoint( adjust([ x + x_seg, y  ]) );\n\n}\n\n",
+    "canvas": null
+  },
+  "parameters": {
+    "lines_n": {
+      "initial": 60,
+      "raw": 0.5,
+      "formula": "int( coax(slider, 1, 91) )",
+      "weight": null,
+      "manual": 0.84,
+      "id": "lines_n"
+    },
+    "thick": {
+      "initial": 2,
+      "raw": 0.5,
+      "formula": "coax(slider, 1, 21)",
+      "weight": null,
+      "manual": 0.1,
+      "id": "thick"
+    },
+    "spacing": {
+      "initial": 12,
+      "raw": 0.5,
+      "formula": "coax(slider, 1, 36)",
+      "weight": null,
+      "manual": 0.3,
+      "id": "spacing"
+    },
+    "time": {
+      "initial": 0.5,
+      "raw": 0.5,
+      "formula": "//Date.now() / 3000",
+      "weight": null,
+      "manual": 0.5,
+      "id": "time"
+    },
+    "x_noise": {
+      "initial": 0.5,
+      "raw": 0.5,
+      "formula": "coax(slider, 1, 200)",
+      "weight": null,
+      "manual": 0.35000000000000003,
+      "id": "x_noise"
+    },
+    "y_noise": {
+      "initial": 0.5,
+      "raw": 0.5,
+      "formula": "coax(slider, 1, 36)",
+      "weight": null,
+      "manual": 0.17,
+      "id": "y_noise"
+    },
+    "pace": {
+      "initial": 0.5,
+      "raw": 0.5,
+      "formula": "coax(slider, 1, 30000)",
+      "weight": null,
+      "manual": 0.9500000000000001,
+      "id": "pace"
+    }
+  },
+  "iteration": 19
+}

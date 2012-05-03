@@ -1,7 +1,7 @@
 {
   "functions": {
     "initial": "paper.project.layers[0].removeChildren();\n\nv.p = new Path();\n_.extend( v.p, { fullySelected: 0,  strokeColor: '#eee', fillColor: '#000' \n});\n\nv.r = Math.seedrandom(\"ooo\");\n\nv.lines = new Array(lines_n);\n\nfor (var i = 0; i < lines_n; i++) {\n  var new_p = v.p.clone();\n  v.lines[i] = new_p;\n}",
-    "paperjs": "time = ev.count / 200;\n\nvar y_off = 120, //spacing * ev.count,\n    n_seg = 60,\n    x_seg = (view.size.width - 40) / n_seg;\n\n\n\n//for (var i = 0; i < lines_n; i++) {\n  var i = ev.count % 69;\n  var line = v.lines[i],\n      winding = 2.2, //- PerlinNoise.noise(1, time, i*1) / 2,\n      y = y_off + i * spacing;\n      \n  line.strokeColor = '#fff'; v.lines[i+1].strokeColor = '#777';\n  \n  if (line.segments.length == 1) {\n    line.segments[0].setPoint( adjust([ 10, y ]) );\n    for (var j = 0; j < n_seg; j++) line.add( adjust([x, y]) );\n  }\n  for (var j = 0; j < n_seg; j++) {\n    var bump, x =  20 + x_seg * j, //+ r2()*0,\n        guide = n_seg - Math.abs(n_seg/winding - j) * 3.6;\n    guide  = Math.pow( clamp(guide, 2, 800), 1.1 );\n    bump   = 2 * Math.pow(PerlinNoise.noise(x/x_noise, y/y_noise, time), 2);\n    \n    line.segments[j].setPoint( adjust([ x, y - 2 - bump * guide ]) );\n  }\n  \n  line.segments[n_seg].setPoint( adjust([ x + x_seg, y  ]) );\n\n  line.strokeWidth = adjust(thick);\n//}\n",
+    "paperjs": "time = ev.count / 400;\n\nvar n_seg = 60,\n    x_seg = (view.size.width - 10) / n_seg;\n\n\n\n//for (var i = 0; i < lines_n; i++) {\nvar i = ev.count % 65;\n  var line = v.lines[i],\n      winding = 2.2 - PerlinNoise.noise(1, time/10, i*1) / 2,\n      y_off = 80, //spacing * ev.count,\n      y = y_off + i * spacing;\n  line.strokeColor = '#fff';\n  line.opacity = 1;\n  v.lines[i+1].strokeColor = '#777';\n  \n  if (line.segments.length == 1) {\n    line.segments[0].setPoint( adjust([ 10, y ]) );\n    for (var j = 0; j < n_seg; j++) line.add( adjust([x, y]) );\n  }\n  line.strokeWidth = adjust(thick);\n  for (var j = 0; j < n_seg; j++) {\n    var bump, x =  20 + x_seg * j, //+ r2()*0,\n        guide = n_seg - Math.abs(n_seg/winding - j) * 3.6;\n    guide  = Math.pow( clamp(guide, 2, 800), 1.1 );\n    bump   = 2 * Math.pow(PerlinNoise.noise(x/x_noise, y/y_noise, time), 2);\n    \n    line.segments[j].setPoint( adjust([ x, y - 2 - bump * guide ]) );\n  }\n  \n  line.segments[n_seg].setPoint( adjust([ x + x_seg*4, y  ]) );\n\n",
     "canvas": null
   },
   "parameters": {
@@ -10,7 +10,7 @@
       "raw": 0.5,
       "formula": "int( coax(slider, 1, 91) )",
       "weight": null,
-      "manual": 0.02,
+      "manual": 0.44,
       "id": "lines_n"
     },
     "thick": {
@@ -18,7 +18,7 @@
       "raw": 0.5,
       "formula": "coax(slider, 1, 21)",
       "weight": null,
-      "manual": 0.17,
+      "manual": 0.1,
       "id": "thick"
     },
     "spacing": {
@@ -62,5 +62,5 @@
       "id": "pace"
     }
   },
-  "iteration": 22
+  "iteration": 21
 }
