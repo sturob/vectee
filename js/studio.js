@@ -35,7 +35,7 @@ paper.install( window );
 // -------------------------------------------
 
 var CONCEPTS = [  // concepts to display in studio
-  'dotboom', 'mushroom', 'valentines', 'triangles', 'maps', 'joy', 
+  'alphatest', 'dotboom', 'mushroom', 'valentines', 'triangles', 'maps', 'joy', 
   'fibonacci', 'discs', 'blocks', 'dreamsquare', 'lines', 'breton'
 ];
 
