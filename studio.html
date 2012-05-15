@@ -12,6 +12,9 @@
   </script>
 
 
+  <link rel="stylesheet" href="/base/css/leaflet.css" type="text/css">
+
+
   <script src="/base/js/lib/jquery/jquery.globalstylesheet.js"></script>
   <script src="/base/js/lib/less.js"></script>  
   <script src="/base/js/lib/canvas/paper.js"></script>
@@ -20,7 +23,11 @@
   <script src="/base/js/lib/backbone.localStorage.js"></script>
   <script src="/base/js/lib/json2.js"></script>
   <script src="/base/js/lib/async.min.js"></script>
+
+  <script src="/base/js/lib/leaflet.js"></script>
   
+  <script src="/base/js/lib/input/jwerty.js"></script>
+
   <script src="/base/js/lib/dataviz/jquery.sparkline.js"></script>
   <script src="/base/js/lib/custom/seedrandom.js"></script>
   
@@ -70,10 +77,11 @@
 
   <img id="t" src="images/t-outline.png">
   
-  <div id="canvas">
-  </div>
+  <div id="canvas"></div>
   
   <div id="meh"></div>
+
+  <div id="map" style="overflow: hidden; position: absolute; opacity: 0.5; z-index: 100000; top: 24px; left: 0; width: 620px; height: 870px"></div>
   
   <div id="sidebar">
     <div id="editor">

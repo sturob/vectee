@@ -312,6 +312,9 @@ $(function() {
   }
   
   $('#pause').bind('mousedown', toggle_pause);
+
+  jwerty.key('esc', toggle_pause);
+
   
   $('#control button.zoomer').bind('click', function() {
     $('body')[0].className = this.id;
