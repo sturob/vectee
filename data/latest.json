@@ -1,0 +1,9 @@
+{
+  "functions": {
+    "initial": "paper.project.layers[0].removeChildren();\nv.count = 0;\n/*v.p = new Path();\n_.extend( v.p, { fullySelected: 0,  strokeColor: '#eee', fillColor: '#000' \n});\n\nv.r = Math.seedrandom(\"ooo\");\n\nv.lines = new Array(lines_n);\n\nfor (var i = 0; i < lines_n; i++) {\n  var new_p = v.p.clone();\n  v.lines[i] = new_p;\n}*/",
+    "paperjs": "if (v.count > 1000) {\n  paper.project.layers[0].removeChildren();\n  v.count = 0;\n}\n\nvar letters = {\n  a: [  [ 0, 64], [32,  0], [64, 64], [48, 32], [16, 32] ],\n  b: [  [16, 64], [16, 0], [64, 16], [16, 32], [64, 48], [16, 64]  ],\n  c: [  [64,  0], [ 0, 0], [ 0, 64], [64, 64]]\n};\n\nvar letter = new Path( letters.c ); // TODO use Point to fix scaling\n_.extend( letter, { fullySelected: 0 } );\n\nletter.scale(4);\nletter.position = new Point([300, 300]);\n\n\nfor (i=0; i<100; i++) {\n  var p = new Point([ Math.random()* 600, Math.random()*600 ]);\n  var nearest = letter.getNearestLocation(p);\n  \n  var size = Math.min(60/nearest.distance, 10);\n  if (size > 1) {\n    v.count++;\n    var dot = new Path.Circle(p, size);\n  //_.extend( dot, { fullySelected: 1 } );\n    dot.fillColor = '#fff';\n  }\n}",
+    "canvas": null
+  },
+  "parameters": {  },
+  "iteration": 0
+}

@@ -1,0 +1,26 @@
+{
+  "functions": {
+    "initial": "paper.project.layers[0].removeChildren();\nv.count = 0;\nv.venues = {};\n\nvar url = 'https://api.foursquare.com/v2/venues/search?oauth_token=' + \n          'ZUX1IEBBXVCDZ305PSTJULXRG3PFIK4W2LN2W01BRI4WI2BR&v=20120514'+\n          '&section=drinks' + '&limit=50 '+ '&radius=500' + '&ll=';\n\nvar geopos = [ -0.051344, 51.544303 ];\nvar total_calls = 8;\n\nvar fetchVenues = function(lng,lat) {\n  if (--total_calls < 0) return;\n  console.log('searching:' + lng + \":\" + lat);\n  \n  \n  if (v.noapi) {\n    // pause\n  } else {\n    $.getJSON(url + lat +','+lng, function(res){\n      console.log('found ' + res.response.venues.length);\n      window.results = res; // test\n      _(res.response.venues).each(function(venue){\n        if (! v.venues[venue.id]) {\n          v.venues[venue.id] = venue;\n        }\n      });\n      console.log('total venues = ' + _( v.venues ).keys().length);\n      var key = (_(v.venues).keys())[int(Math.random()*_(v.venues).keys().length)];\n      var next = v.venues[ key ]; // TODO find highest ranking unsearched\n      \n      if (! next.searched) {\n        setTimeout( function(){ fetchVenues(next.location.lng, next.location.lat) }, 5000 );\n      }\n      next.searched = true;\n    });\n  }\n}\n\nsetTimeout( function(){ fetchVenues(geopos[0], geopos[1]) }, 100);\n\n\n\n/*v.p = new Path();\n_.extend( v.p, { fullySelected: 0,  strokeColor: '#eee', fillColor: '#000' \n});\n\nv.r = Math.seedrandom(\"ooo\");\n\nv.lines = new Array(lines_n);\n\nfor (var i = 0; i < lines_n; i++) {\n  var new_p = v.p.clone();\n  v.lines[i] = new_p;\n}*/",
+    "paperjs": "paper.project.layers[0].removeChildren();\n\n_.each(v.venues, function(venue) {\n  \n  var p = new Point([  \n    1300 - Math.abs( venue.location.lng ) * 21000,\n    2000 - (Math.abs( venue.location.lat - 51.5)  * 40000),\n  ]);\n  \n  var text = new PointText(p);\n  text.justification = 'left';\n  text.fillColor = '#444';\n  \n  var size = venue.stats.usersCount/60 * venue.stats.checkinsCount/20;\n  if (size > labels) text.content = venue.name;\n\n  var dot = new Path.Circle(p, 2);\n  dot.fillColor = '#ff0';\n  dot.fillColor.brightness = size / 5;\n  //text.content = venue.name;\n});\n\n",
+    "canvas": null
+  },
+  "parameters": {
+    "noapi": {
+      "initial": 0.5,
+      "raw": 0.5,
+      "formula": "true",
+      "weight": null,
+      "manual": 0.98,
+      "id": "noapi"
+    },
+    "labels": {
+      "initial": 0.5,
+      "raw": 0.5,
+      "formula": "coax(slider, 15, 1)",
+      "weight": null,
+      "manual": 0.74,
+      "id": "labels"
+    }
+  },
+  "iteration": 2
+}

@@ -174,7 +174,7 @@ this.noise = function(x, y, z) {
    function scale(n) { return (1 + n)/2; }
 }
 
-
+window.perlin = PerlinNoise.noise;
 
 
 
