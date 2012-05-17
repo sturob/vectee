@@ -1,0 +1,34 @@
+{
+  "functions": {
+    "initial": "paper.project.layers[0].removeChildren();\nv.count = 0;\nv.venues = {};\n\nv.ll2p = function(lat, lng) {\n  return v.map.layerPointToContainerPoint( v.map.latLngToLayerPoint( new L.LatLng(lat, lng) ) );\n}\n\nvar url = 'http://api.foursquare.com/v2/venues/search?oauth_token=' + \n          'ZUX1IEBBXVCDZ305PSTJULXRG3PFIK4W2LN2W01BRI4WI2BR&v=20120514'+\n          '&section=drinks' + '&limit=50'+ '&radius=1500' + '&ll=';\n\nvar geopos = [ 51.544303, -0.051344 ];\n//geopos = [ 51.538043, -0.061344 ];\n\nvar total_calls = 24;\n\nvar dirs = [   [1, 0], [0, 1], [-1, 0], [0, -1]   ];// r d l u\nvar altdirs = [   [1, 1], [-1, 1], [-1, -1], [0, -1]   ];// ur dr dl ul\n\n\n\nwindow.fetchVenues = function(lat, lng) {\n  if (--total_calls < 0) return;\n  console.log('searching:' + lat + \":\" + lng);\n  \n  if (v.noapi) {\n    // pause\n  } else {\n    $.getJSON(url + lat +','+lng, function(res){\n      console.log('found ' + res.response.venues.length);\n      window.results = res; // test\n      _(res.response.venues).each(function(venue){\n        if (! v.venues[venue.id]) {\n          v.venues[venue.id] = venue;\n        }\n      });\n      console.log('total venues = ' + _( v.venues ).keys().length);\n      var key = (_(v.venues).keys())[int(Math.random()*_(v.venues).keys().length)];\n      var next = v.venues[ key ]; // TODO find highest ranking? furtherest? unsearched\n      \n      if (! next.searched) {\n        next.searched = true;\n       // setTimeout( function(){ fetchVenues(next.location.lng, next.location.lat) }, 5000 );\n      }\n    });\n  }\n}\n\n\n\n// setTimeout( function(){ fetchVenues(geopos[0], geopos[1]) }, 100);\n\nv.map = new L.Map('map');\n\nvar cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/22677/256/{z}/{x}/{y}.png',\n\t\tcloudmadeAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',\n\t\tcloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 19, attribution: cloudmadeAttribution});\n\nv.map.setView(new L.LatLng(geopos[0], geopos[1]), 14).addLayer(cloudmade);\n\nv.map.on('click', function(ev){\n  fetchVenues(ev.latlng.lat, ev.latlng.lng);\n})\n",
+    "paperjs": "paper.project.layers[0].removeChildren();\n\n_.each(v.venues, function(venue) {\n  var size = venue.stats.usersCount/100 * venue.stats.checkinsCount/20;\n  if (size < 10) return;\n  \n  var pos = v.map.layerPointToContainerPoint( \n    v.map.latLngToLayerPoint( new L.LatLng( venue.location.lat, venue.location.lng ) )\n  );\n  var p = new Point([pos.x, pos.y]);\n  \n  if (size > labels)  {\n    var text = new PointText(p.add([8, 0]));\n    text.justification = 'left';\n    text.fontSize = '10px';\n    text.fillColor = '#0ff';\n    text.content = venue.name + (venue.categories[0] ? ' - '+ venue.categories[0]['name'] : '');\n  }\n  \n  var dot = new Path.Circle(p,  Math.pow(size, power));\n  dot.fillColor = '#ff0';\n  //dot.fillColor.brightness = size /1;\n  dot.opacity = size / 7;\n  //text.content = venue.name;\n});\n\n",
+    "canvas": "  "
+  },
+  "parameters": {
+    "noapi": {
+      "initial": 0.5,
+      "raw": 0.5,
+      "formula": "true",
+      "weight": null,
+      "manual": 0.98,
+      "id": "noapi"
+    },
+    "labels": {
+      "initial": 0.5,
+      "raw": 0.5,
+      "formula": "coax(slider, 10460, -100)",
+      "weight": null,
+      "manual": 0.04,
+      "id": "labels"
+    },
+    "power": {
+      "initial": 0.5,
+      "raw": 0.5,
+      "formula": "coax(slider, 0, 1)",
+      "weight": null,
+      "manual": 0.19,
+      "id": "power"
+    }
+  },
+  "iteration": 4
+}
