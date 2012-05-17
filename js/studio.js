@@ -21,9 +21,11 @@ window.onFrame    = function() {};
 window.J          = {};
 
 window.editors = {
-      'initial': { f: function() {} },  // called on init
+      'initial': { f: function() {} }, // called on init
       'paperjs': { f: function() {} }, // called as onFrame
-      'canvas':  { f: function() {} }, // called when the canvas is at rest
+      'instant': { f: function() {} }, // called instantly
+      'unpause': { f: function() {} }, // called when unpause
+      'canvas':  { f: function() {} }  // called when the canvas is at rest
     };
 
 window.canvas = new Canvas;
@@ -235,11 +237,15 @@ $(function() {
   		if (! ed.error) {
         if (error_last_time) inform_of_error(false);
         changed();
+        if (key == 'instant') {
+          ed.f() // no this atm
+          console.log('yup')
+        }
   		}
       localStorage.setItem( CurrentVersion.id + "_" + key, f_text ); // save
     };
     
-    if (key == 'paperjs') {
+    if (key == 'paperjs' || key == 'instant') {
       changer = _.debounce( changer, 500 )
     }
 
@@ -307,13 +313,15 @@ $(function() {
   $('#save_a_version').click( CurrentVersion.saveVersion );
 
   function toggle_pause () {
+    if (paused) editors.unpause.f();
     paused = ! paused;
+
     $('#pause').text( paused ? '>' : '||' );
   }
   
   $('#pause').bind('mousedown', toggle_pause);
 
-  jwerty.key('esc', toggle_pause);
+  jwerty.key('esc', _.debounce(toggle_pause, 100));
 
   
   $('#control button.zoomer').bind('click', function() {
