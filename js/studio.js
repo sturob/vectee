@@ -238,8 +238,7 @@ $(function() {
         if (error_last_time) inform_of_error(false);
         changed();
         if (key == 'instant') {
-          ed.f() // no this atm
-          console.log('yup')
+          ed.f()
         }
   		}
       localStorage.setItem( CurrentVersion.id + "_" + key, f_text ); // save
@@ -460,8 +459,8 @@ function saveGIF() {
 
 
 function setBG(color) {
-  $('#t').css({ backgroundColor: color });
-  $('#canvas canvas').globalcss( 'background-color', color );
+  // $('#t').css({ backgroundColor: color });
+  // $('#canvas canvas').globalcss( 'background-color', color );
 }
 
 
