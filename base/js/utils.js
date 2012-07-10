@@ -1,7 +1,23 @@
 // mine
 
-// TODO combine kv() + a2o() as keyed(key|keys[], [value])
 
+
+_.mixin({
+  spawn: function(arr, value) {
+    if (value == null) {
+      value = true;
+    }
+    var o = {};
+    for(var n = 0; n < arr.length; n++) {
+      var val = _.isFunction(value) ? value.call(arr[n]) : value;
+
+      o[arr[n]] = val;
+    }    
+    return o;
+  }
+});
+
+// suspect this is not worth keeping
 function kv (k, v) { // (1, 2) -> { 1: 2 }
   var obj = {};  obj[k] = v;
   return obj;
