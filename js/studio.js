@@ -62,11 +62,20 @@ var CurrentVersion = {
   saveVersion: function() { // TODO: save thumbnail as well
     CurrentVersion.iteration++;
     var data = CurrentVersion.asJSON();
+
+    var post_url = 'http://localhost:6969/vectee/' + CurrentVersion.id + '/',
+        post_string = JSON.stringify( data );
     
     $.ajax({
-      type: 'POST',  url: 'http://localhost:6969/' + CurrentVersion.id + '/' + CurrentVersion.iteration,
-      data: JSON.stringify( data ),  dataType: 'json'
+      type: 'POST',  url: post_url + CurrentVersion.iteration + '.json',
+      data: post_string,  dataType: 'json'
     });
+
+    $.ajax({
+      type: 'POST',  url: post_url + 'latest.json',
+      data: post_string,  dataType: 'json'
+    });
+
   }, // to disk via node.js
   asJSON: function() {
     var the_dump = {
@@ -112,7 +121,7 @@ window.Design = {
           done('bad JSON in latest.json') 
         });
       }
-    }, function(err, design) { // we should have loaded the design
+    }, function(err, design) { // we have loaded the design, unless...
       if (err) {
         console.log(err);
         return;
@@ -149,8 +158,9 @@ window.Design = {
                       design.version.functions[key] || '';
         session.setValue( saved_f );
       });
-  
-      $('.tabs a:first-child').click(); // TODO remember
+      
+      var tab_id = localStorage.getItem('tab');
+      $(".tabs a[href=#" + tab_id + "]").click();
     
       if (! SAFE_MODE) Design.init( design.concept.defaultBackground );
       paused = false;
@@ -261,6 +271,7 @@ $(function() {
     // settings    
     editor.ace.setShowPrintMargin( false );
     editor.ace.setTheme( "ace/theme/twilight" );
+    editor.ace.setFontSize( 12 );
     session.setTabSize( 2 );
     session.setUseSoftTabs( true );
     session.setMode( new JavaScriptMode() );
@@ -272,10 +283,7 @@ $(function() {
     session.on('change', editor.onChange);
   });
 
-
   Design.load( localStorage.getItem( 'tudio::current_design') || 'dotboom' );
-
-
 });
 
 
@@ -292,7 +300,8 @@ $(function() {
     $('.tabs a').removeClass('active'); $(this).addClass('active');
     $('.editor').hide();
     $('.editor#'+ id).show();
-   editors[id.split('_')[0]].ace.resize();
+    editors[id.split('_')[0]].ace.resize();
+    localStorage.setItem('tab', id);
     return false;
   });
   
@@ -321,6 +330,17 @@ $(function() {
   $('#pause').bind('mousedown', toggle_pause);
 
   jwerty.key('esc', _.debounce(toggle_pause, 100));
+
+
+  function find_in_code(){
+    $('textarea:visible').focus();
+    var tab = $('.tabs a.active').text();
+    var search = prompt('Find in code:')
+    editors[tab].ace.find(search);
+    return false;
+  }
+
+  jwerty.key('⌘+f', find_in_code );
 
   
   $('#control button.zoomer').bind('click', function() {

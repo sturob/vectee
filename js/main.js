@@ -17,9 +17,7 @@ var changed = function() {
 }
 
 $(function() {
-
   // raw_params 
-  
   canvas.addElement();
   paper.install( window );
   paper.setup( canvas.el ); // Create an empty project and a view for the canvas

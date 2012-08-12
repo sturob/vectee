@@ -59,15 +59,19 @@ button#pause {
 }
 
     
-#meh {
-  display: none;
-  position: fixed;
-  top: 24px;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  overflow: scroll;
-  z-index: 9999;
+
+
+
+
+
+#container {
+  position: relative;
+  width: 620px;
+  height: 620px;
+
+  #meh {
+    z-index: 9999;
+  }
 }
     
 div#canvas canvas {
@@ -111,12 +115,16 @@ body.z3 #canvas canvas {
 #sidebar {
   position: fixed;
   right: 0;
-  left: 602px;
+  left: 632px;
   top: 0px;
   bottom: 0;
   background: #eee;
   overflow-y: scroll;
   overflow-x: hidden;
+}
+
+div.ace_warning { 
+  // background: none !important;
 }
 
     
@@ -150,6 +158,7 @@ body.z3 #canvas canvas {
 	left: 0px;
   top: 14px;
   right: 0;
+  bottom: 0;
   
   .error_message {
     display: none;
@@ -168,7 +177,7 @@ body.z3 #canvas canvas {
 /*  width: 540px;*/
   line-height: 1.5em;
   font-size: 11px;
-	height: 600px;
+	height: 95%;
   position: relative !important;
   
   .ace_gutter-cell {
@@ -196,12 +205,12 @@ button.add_parameter {
 }
 
 
-ul.Snorkle { 
+ul.Snorkle { display: none;
   z-index: 3;
 	position: absolute;
 	left: 54px;
   right: 16px;
-	top: 620px;
+	bottom: 0px;
 	font-family: Helvetica;
   background-color: white;
 
@@ -341,7 +350,7 @@ ul.Snorkle {
 }
 
 img {
-  outline: 2px dotted black;
+  outline: 1px dotted rgba(0,0,0,0.1);
 }
 
 

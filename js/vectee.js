@@ -1,6 +1,6 @@
 // Canvas
 var Canvas = Backbone.Model.extend({
-  width: 620, height: 870,
+  width: 620, height: 620,
   initialize: function() {
     this.set({
       width:  this.width,

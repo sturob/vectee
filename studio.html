@@ -14,7 +14,6 @@
 
   <link rel="stylesheet" href="/base/css/leaflet.css" type="text/css">
 
-
   <script src="/base/js/lib/jquery/jquery.globalstylesheet.js"></script>
   <script src="/base/js/lib/less.js"></script>  
   <script src="/base/js/lib/canvas/paper.js"></script>
@@ -23,6 +22,8 @@
   <script src="/base/js/lib/backbone.localStorage.js"></script>
   <script src="/base/js/lib/json2.js"></script>
   <script src="/base/js/lib/async.min.js"></script>
+
+  <script src="/base/js/lib/one-color.js"></script>
 
   <script src="/base/js/lib/chainvas.js"></script>
 
@@ -38,7 +39,7 @@
   <script src="/base/js/snorkle.js"></script>
 	<script src="http://localhost:8339/socket.io/socket.io.js"></script>
   
-  <script src="/base/js/lib/livecoding/ace/ace-uncompressed.js"  ></script>
+  <script src="/base/js/lib/livecoding/ace/ace.js"  ></script>
   <script src="/base/js/lib/livecoding/ace/theme-twilight.js"    ></script>  
   <script src="/base/js/lib/livecoding/ace/mode-javascript.js"   ></script>
   <script src="/base/js/lib/output/SVGKit.js"         ></script> 
@@ -79,11 +80,13 @@
 
   <img id="t" src="images/t-outline.png">
   
-  <div id="canvas"></div>
-  
-  <div id="meh"></div>
 
-  <!-- <div id="map" style="margin: 8px; overflow: hidden; position: absolute; opacity: 1; z-index: 100; top: 24px; left: 0; width: 620px; height: 870px"></div> -->
+  <div id="container"><!-- where the action happens -->
+    <div id="canvas"></div>
+    <div id="meh"></div>
+  </div>
+
+
   
   <div id="sidebar">
     <div id="editor">
